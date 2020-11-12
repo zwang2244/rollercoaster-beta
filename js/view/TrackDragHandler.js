@@ -22,6 +22,7 @@ define( function( require ) {
    * @param {TrackNode} the track node that this listener will drag
    * @constructor
    */
+
   function TrackDragHandler( trackNode ) {
     this.trackNode = trackNode;
     var trackDragHandler = this;

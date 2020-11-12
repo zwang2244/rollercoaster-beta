@@ -53,13 +53,33 @@ define( function( require ) {
     var earthHeight = options.earthHeight;
 
     //Function that creates a Height slider
+
     var addHeightSlider = function (track) {
+            var trackTop = track.getTopControlPointY();
+            var vScale = track.vScaleProperty.get();
 	    var trackSlider = new ControlSlider ( 
 	    	track.trackName + " Height",
-	    	 'px',
+	    	 'm',
 	    	 track.vScaleProperty,
-	    	 new Range(0.5,1), //height range
-	    	 function(val){return val;},
+	    	 track.vRange, //height range
+	    	 function(val){return val*trackTop/vScale;},
+	    	 new Property(true),
+	    	 {delX:0.05, decimals:2} );
+	    	 trackSlider.scale(0.60);
+	    return trackSlider;
+	} ;
+
+    //Function that creates a Width slider
+
+    var addWidthSlider = function (track) {
+            var trackWidth = track.getRightControlPointX() - track.getLeftControlPointX();
+            var hScale = track.hScaleProperty.get();
+	    var trackSlider = new ControlSlider ( 
+	    	track.trackName + " Width",
+	    	 'm',
+	    	 track.hScaleProperty,
+	    	 new Range(0.4,0.8), //width range
+	    	 function(val){return val*trackWidth/hScale;},
 	    	 new Property(true),
 	    	 {delX:0.05, decimals:2} );
 	    	 trackSlider.scale(0.60);
@@ -70,7 +90,7 @@ define( function( require ) {
     var addFrictionSlider = function (track) {
 	    var trackSlider = new ControlSlider ( 
 	    	track.trackName + " Friction",
-	    	 'px',
+	    	 '',
 	    	 track.frictionProperty,
 	    	 new Range(0,1), //friction range
 	    	 function(val){return val;},
@@ -89,13 +109,20 @@ define( function( require ) {
 
 	//add height and friction sliders
         var heightSlider = addHeightSlider(track);
+        var widthSlider = addWidthSlider(track);
         var frictionSlider = addFrictionSlider(track);
+
         View.addChild(heightSlider);
         View.addChild(frictionSlider);
+        View.addChild(widthSlider);
+
         frictionSlider.visible = false;
         heightSlider.visible = false;
-	heightSlider.top = screenHeight - earthHeight + 10;
-	frictionSlider.top = screenHeight - earthHeight + 10;
+        widthSlider.visible = false;
+
+	heightSlider.top = screenHeight - earthHeight + 25;
+	frictionSlider.top = screenHeight - earthHeight + 25;
+	widthSlider.top = screenHeight - earthHeight + 25;
 	
 	//include a delete button for each track
 	var deleteNode = new FontAwesomeNode( 'times_circle', {fill: 'red', scale: 0.6} );
@@ -108,13 +135,18 @@ define( function( require ) {
 	baseColor: new Color('#fefd53')
 	} );
 	View.addChild(deleteButton);
-
+	
 	//design state change, modify visibilities 
 	model.trackDesignStateProperty.link( function (state) {
+
 		frictionSlider.visible = (state == 'friction') ? true:false;			
 		heightSlider.visible = (state == 'height') ? true:false;			
+		widthSlider.visible = (state == 'width') ? true:false;			
+
 		frictionSlider.centerX = trackNode.centerX;
 		heightSlider.centerX = trackNode.centerX;
+		widthSlider.centerX = trackNode.centerX;
+
 		deleteButton.visible = (state == 'deleteTrack') ? true:false;
 		deleteButton.centerX = trackNode.centerX;
 		deleteButton.bottom = trackNode.top - 10;
@@ -127,6 +159,7 @@ define( function( require ) {
             trackLayer.removeChild( trackNode );
 	    View.removeChild(frictionSlider);
 	    View.removeChild(heightSlider);
+	    View.removeChild(widthSlider);
 	    View.removeChild(deleteButton);
             model.tracks.removeItemRemovedListener( itemRemovedListener );// Clean up memory leak
           }

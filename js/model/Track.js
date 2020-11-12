@@ -15,6 +15,7 @@ define( function( require ) {
   var Vector2 = require( 'DOT/Vector2' );
   var SplineEvaluation = require( 'ROLLERCOASTER/model/SplineEvaluation' );
   var dot = require( 'DOT/dot' );
+  var Range = require( 'DOT/Range' );
 
   // constants
   var FastArray = dot.FastArray;
@@ -38,11 +39,14 @@ define( function( require ) {
     	trackName:'Track',
     	vScale :1,
     	hScale :1,
+    	vRange: new Range(0.4,1),
       },
       options );
 
+    this.options = options;
     var track = this;
     this.trackName = options.trackName;
+    this.vRange = options.vRange;
     this.events = events;
     this.parents = parents;
     this.modelTracks = modelTracks;
@@ -63,9 +67,9 @@ define( function( require ) {
 
       // True if the track can be interacted with.  For screens 1-2 only one track will be physical (and hence visible).
       // For screen 3, tracks in the control panel are visible but non-physical until dragged to the play area
-      physical: false,
+      physical: true, //Changed to true by default -Dinesh
 
-      // Flag that shows whether the track has been dragged fully out of the panel
+      // Flag that shows whether the track has been dragged fully out of the panethis.options.vScalel
       leftThePanel: false,
 
       // Keep track of whether the track is dragging, so performance can be optimized while dragging
@@ -84,14 +88,17 @@ define( function( require ) {
       //Keep track of whether the track is selected
       selected: false,
 
-      //friction of the track
-      friction: 0,      
+      //friction of the track  (Dinesh)
+      friction: 0,
+
+      trackHeight: 0,
     } );
 
     this.property( 'physical' ).link( function() { events.trigger( 'track-changed' ); } );
 //    this.physicalProperty.link( function() { events.trigger( 'track-changed' ); } );
 
     this.controlPoints = controlPoints;
+    this.referenceCP = this.copyControlPointSources();
 
     this.interactive = interactive;
     this.u = new FastArray( this.controlPoints.length );
@@ -119,8 +126,9 @@ define( function( require ) {
   return inherit( PropertySet, Track, {
 
      //update the control points when the scale changes
-     updateScales: function(vScale, hScale) {
-	var point, xVScale, xHScale, scaledPoint;
+     updateVScale: function(vScale, hScale) {
+	var point, pointX, pointY, xVScale, xHScale, scaledPoint;
+	/*
 	for(var i=0; i < this.controlPoints.length; i++)
 	{
 		point = this.controlPoints[i].sourcePosition;
@@ -130,9 +138,55 @@ define( function( require ) {
 		this.controlPoints[i].vScale = vScale;
 		this.controlPoints[i].hScale = hScale;
 		this.controlPoints[i].sourcePosition = scaledPoint;
+	}*/
+	for(var i=0; i < this.referenceCP.length; i++)
+	{
+		pointY = this.referenceCP[i].y;
+		pointX = this.controlPoints[i].sourcePosition.x;
+		xVScale = 1;
+		xHScale = this.controlPoints[i].hScale;
+		scaledPoint = new Vector2(pointX*hScale/xHScale, pointY*vScale/xVScale);
+		this.controlPoints[i].vScale = vScale;
+		this.controlPoints[i].hScale = hScale;
+		this.controlPoints[i].sourcePosition = scaledPoint;
 	}
+	
 	this.updateLinSpace();
 	this.updateSplines();
+	this.trackHeight = this.getTopControlPointY();
+	this.trigger('scaled');     
+     },
+     //update the control points when the scale changes
+     updateScales: function(vScale, hScale) {
+	var point, pointX, pointY, xVScale, xHScale, scaledPoint, leftX, leftY, centerX;
+	/*
+	for(var i=0; i < this.controlPoints.length; i++)
+	{
+		point = this.controlPoints[i].sourcePosition;
+		xVScale = this.controlPoints[i].vScale;
+		xHScale = this.controlPoints[i].hScale;
+		scaledPoint = new Vector2(point.x*hScale/xHScale, point.y*vScale/xVScale);
+		this.controlPoints[i].vScale = vScale;
+		this.controlPoints[i].hScale = hScale;
+		this.controlPoints[i].sourcePosition = scaledPoint;
+	}*/
+	centerX = (this.getLeftControlPointX() + this.getRightControlPointX())/2;
+	xVScale = 1;
+
+	for(var i=0; i < this.referenceCP.length; i++)
+	{
+		pointY = this.referenceCP[i].y;
+		pointX = this.controlPoints[i].sourcePosition.x;
+		xHScale = this.controlPoints[i].hScale;
+		scaledPoint = new Vector2( centerX + (pointX-centerX)*hScale/xHScale, pointY*vScale/xVScale);
+		this.controlPoints[i].vScale = vScale;
+		this.controlPoints[i].hScale = hScale;
+		this.controlPoints[i].sourcePosition = scaledPoint;
+	}
+	
+	this.updateLinSpace();
+	this.updateSplines();
+	this.trackHeight = this.getTopControlPointY();
 	this.trigger('scaled');     
      },
 	
@@ -166,9 +220,9 @@ define( function( require ) {
       for ( var i = 0; i < this.controlPoints.length; i++ ) {
         this.controlPoints[i].reset();
       }
-
       // Broadcast message so that TrackNode can update the shape
-      this.updateSplines();
+//      this.updateSplines();
+      this.updateScales(this.options.vScale,this.options.hScale);
       this.trigger( 'reset' );
     },
 
@@ -337,6 +391,7 @@ define( function( require ) {
           return o.snapTarget;
         }
       }
+
       return null;
     },
     setSnapTarget: function(snapTarget) {
@@ -406,7 +461,33 @@ define( function( require ) {
       return best;
     },
 
-    getTrackStartingPoint: function() {
+    getRightControlPointXY: function() {
+      var best = Number.NEGATIVE_INFINITY;
+      var position;
+      var length = this.controlPoints.length;
+      for ( var i = 0; i < length; i++ ) {
+        if ( this.controlPoints[i].sourcePosition.x > best ) {
+          best = this.controlPoints[i].sourcePosition.x;
+          position = this.controlPoints[i].sourcePosition;
+        }
+      }
+      return position;
+    },
+
+    getRightControlPoint: function() {
+      var best = Number.NEGATIVE_INFINITY;
+      var controlPoint;
+      var length = this.controlPoints.length;
+      for ( var i = 0; i < length; i++ ) {
+        if ( this.controlPoints[i].sourcePosition.x > best ) {
+          best = this.controlPoints[i].sourcePosition.x;
+          controlPoint = this.controlPoints[i];
+        }
+      }
+      return controlPoint;
+    },
+
+    getTrackStartingPoint: function() { //DINESH
     //this is the second control point from the left
       var best = Number.POSITIVE_INFINITY;
       var position, sourcePoint, distance;
@@ -424,7 +505,7 @@ define( function( require ) {
 		}
 	}
       }
-      return position;
+     return position;
     },
 
     containsControlPoint: function( controlPoint ) {
@@ -442,7 +523,7 @@ define( function( require ) {
       for ( var i = 0; i < this.controlPoints.length; i++ ) {
       var otherPoint = this.controlPoints[i];
       var distance = 0 ;
-        if ( otherPoint.position.distance(controlPoint.position) < 1E-3 ) {
+        if ( otherPoint.position.distance(controlPoint.position) < 1E-2 ) {
           return otherPoint;
         }
       }
@@ -773,7 +854,7 @@ define( function( require ) {
     copyControlPointSources: function() {
       return this.controlPoints.map( function( controlPoint ) {return controlPoint.sourcePosition.copy();} );
     },
-
+    
     getDebugString: function() {
       var string = 'var controlPoints = [';
       for ( var i = 0; i < this.controlPoints.length; i++ ) {

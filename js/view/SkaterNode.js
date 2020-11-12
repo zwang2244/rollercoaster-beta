@@ -30,7 +30,7 @@ define( function( require ) {
   // Map from mass(kg) to the amount to scale the image
   var centerMassValue = (Constants.MIN_MASS + Constants.MAX_MASS) / 2;
   var width = skaterLeftImage.width;
-  var imgPxRange = new Range(75,100);
+  var imgPxRange = new Range(80,90); //75,100 originally
   var massToScale = new LinearFunction( centerMassValue, Constants.MAX_MASS, imgPxRange.min/width, imgPxRange.max/width );
 
 //  var massToScale = new LinearFunction( centerMassValue, Constants.MAX_MASS, 0.34, 0.43 );

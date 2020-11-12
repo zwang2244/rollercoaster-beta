@@ -25,7 +25,7 @@ define( function( require ) {
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var TextPushButton = require( 'SUN/buttons/TextPushButton' );
-  var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
+//  var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var RefreshButton = require( 'SCENERY_PHET/buttons/RefreshButton' );
   var Panel = require( 'SUN/Panel' );
   var Plane = require( 'SCENERY/nodes/Plane' );
@@ -39,12 +39,17 @@ define( function( require ) {
 
   //specific modules
   var TrackNode = require( 'ROLLERCOASTER/view/TrackNode' );
+  var GridNode = require( 'ROLLERCOASTER/view/GridNode' );
   var ControlSlider = require( 'ROLLERCOASTER/view/ControlSlider' );
   var TrackCreationPanel = require( 'ROLLERCOASTER/view/TrackCreationPanel' );
   var StateDisplayPanel = require( 'ROLLERCOASTER/view/StateDisplayPanel' );
-  var TrackDesignButtons = require( 'ROLLERCOASTER/view/TrackDesignButtons' );
+  var TrackDesignPanel = require( 'ROLLERCOASTER/view/TrackDesignPanel' );
   var SkaterNode = require( 'ROLLERCOASTER/view/SkaterNode' );
   var TrackLayerNode = require( 'ROLLERCOASTER/view/TrackLayerNode' );
+  var BarGraphBackground = require( 'ROLLERCOASTER/view/BarGraphBackground' );
+  var BarGraphForeground = require( 'ROLLERCOASTER/view/BarGraphForeground' );
+  var ForceVectors = require( 'ROLLERCOASTER/view/ForceVectors' );
+  var DisplayPanelFirst = require( 'ROLLERCOASTER/view/DisplayPanelFirst' );
 
   /**
    * @param {SimluationModel}  model of the simulation
@@ -65,7 +70,8 @@ define( function( require ) {
 	var skygroundy=this.layoutBounds.centerY*1.2 ; // skygroundy- Y coordinate of the boundary between sky and ground  
 	var screenWidth=this.layoutBounds.width;
 	var screenHeight=this.layoutBounds.height;
-	var earthHeight=screenHeight*1/2.5;
+//	var earthHeight=screenHeight*1/2.5;
+	var earthHeight=screenHeight*1/2.99;
 	View.interfaceHeight = screenHeight - earthHeight;
 
 	View.addChild( new SkyNode(
@@ -88,159 +94,59 @@ define( function( require ) {
    // Model View Transform
     var modelPoint = new Vector2( 0, 0 );
     var viewPoint = new Vector2( this.layoutBounds.width / 2, this.layoutBounds.height - earthHeight );
-    var scale = 50;
+    var scale = 50; //1m = 50px
     var modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping( modelPoint, viewPoint, scale );
     this.modelViewTransform = modelViewTransform;
 
-  //  Reset button 
-       var resetAllButton = new ResetAllButton( { listener: function() { 
-	  model.reset();
-	 }
-       } );
-
-      var resetText=new Text('Reset', {font:new PhetFont({ fill: 'black', size: 11}) } );
-      this.addChild(resetAllButton);
-      this.addChild(resetText);
-
-      resetAllButton.scale(0.80);
-      resetAllButton.right=this.layoutBounds.right - 20;
-      resetAllButton.bottom=this.layoutBounds.bottom - 20;
-      resetText.top=resetAllButton.bottom+3;
-      resetText.centerX=resetAllButton.centerX;
+  //Grid Node
+    this.gridNode = new GridNode( model.gridVisibleProperty, modelViewTransform, earthHeight);
+    View.addChild( this.gridNode );
 
    //Model bounds
     this.availableViewBounds = new DotRectangle(0,0,this.layoutBounds.width,this.layoutBounds.height);
     this.availableModelBoundsProperty = new Property();
     this.availableModelBoundsProperty.linkAttribute( model, 'availableModelBounds' );
     var modelBounds = this.modelViewTransform.viewToModelBounds( this.availableViewBounds );
-    this.availableModelBoundsProperty.value = modelBounds;    
+    this.availableModelBoundsProperty.value = modelBounds;
 //    this.availableModelBounds = this.modelViewTransform.viewToModelBounds( this.availableViewBounds );
 //    this.availableModelBoundsProperty.value = this.availableModelBounds;
 
     //TrackLayer that contains all TrackNodes
     var trackLayerNode = new TrackLayerNode(model,View, {screenHeight: screenHeight, earthHeight: earthHeight} );
     View.addChild(trackLayerNode);
-
-/*
-    //Function that creates a Height slider
-    var addHeightSlider = function (track) {
-	    var trackSlider = new ControlSlider ( 
-	    	track.trackName + " Height",
-	    	 'px',
-	    	 track.vScaleProperty,
-	    	 new Range(0.5,1), //height range
-	    	 function(val){return val;},
-	    	 new Property(true),
-	    	 {delX:0.05, decimals:2} );
-	    	 trackSlider.scale(0.60);
-	    return trackSlider;
-	} ;
-
-    //Function that creates a Friction Slider
-    var addFrictionSlider = function (track) {
-	    var trackSlider = new ControlSlider ( 
-	    	track.trackName + " Friction",
-	    	 'px',
-	    	 track.frictionProperty,
-	    	 new Range(0,1), //friction range
-	    	 function(val){return val;},
-	    	 new Property(true),
-	    	 {delX:0.05, decimals:2} );
-	    	 trackSlider.scale(0.60);
-	    return trackSlider;
-	} ;
-
-// Track Node
-
-	//TrackLayer contains all the tracks
-      var trackLayer = new Node();
-
-      var addTrackNode = function( track ) {
-
-        var trackNode = new TrackNode( model, track, modelViewTransform, View.availableModelBoundsProperty );
-        trackLayer.addChild( trackNode );
-
-	//add height and friction sliders
-        var heightSlider = addHeightSlider(track);
-        var frictionSlider = addFrictionSlider(track);
-        View.addChild(heightSlider);
-        View.addChild(frictionSlider);
-        frictionSlider.visible = false;
-        heightSlider.visible = false;
-	heightSlider.top = screenHeight - earthHeight + 10;
-	frictionSlider.top = screenHeight - earthHeight + 10;
-	
-	//include a delete button for each track
-	var deleteNode = new FontAwesomeNode( 'times_circle', {fill: 'red', scale: 0.6} );
-	var deleteButton = new RoundPushButton( {
-	listener: function() { model.tracks.remove( track ); },
-	content: deleteNode,
-	radius: 20,
-	touchAreaRadius: 20 * 1.3,
-	xContentOffset: -0.5,
-	baseColor: new Color('#fefd53')
-	} );
-	View.addChild(deleteButton);
-
-	//design state change, modify visibilities 
-	model.trackDesignStateProperty.link( function (state) {
-		frictionSlider.visible = (state == 'friction') ? true:false;			
-		heightSlider.visible = (state == 'height') ? true:false;			
-		frictionSlider.centerX = trackNode.centerX;
-		heightSlider.centerX = trackNode.centerX;
-		deleteButton.visible = (state == 'deleteTrack') ? true:false;
-		deleteButton.centerX = trackNode.centerX;
-		deleteButton.bottom = trackNode.top - 10;
-		track.interactive = (state == 'addTrack') ? true:false;
-	} );
-
-        // When track removed, remove its view
-        var itemRemovedListener = function( removed ) {
-          if ( removed === track ) {
-            trackLayer.removeChild( trackNode );
-            model.tracks.removeItemRemovedListener( itemRemovedListener );// Clean up memory leak
-	    View.removeChild(frictionSlider);
-	    View.removeChild(heightSlider);
-	    View.removeChild(deleteButton);
-          }
-        };
-        model.tracks.addItemRemovedListener( itemRemovedListener );
-        return trackNode;
-      };
-
-      var trackNodes = model.tracks.map( addTrackNode ).getArray();
-      model.tracks.addItemAddedListener( addTrackNode );
-      View.addChild( trackLayer );
-*/
+    
 
   //Track Creation Panel
-   var trackCreationPanel = new TrackCreationPanel( model );
+   var trackCreationPanel = new TrackCreationPanel( model, View );
    View.addChild(trackCreationPanel);
-   trackCreationPanel.top = screenHeight - earthHeight + 10;
+   trackCreationPanel.top = View.interfaceHeight + 15;
    trackCreationPanel.left = 10;
 
     //Simulation State(Design/State) Display Panel
-    var stateDisplayPanel = new StateDisplayPanel( model );
+/*    var stateDisplayPanel = new StateDisplayPanel( model );
     View.addChild(stateDisplayPanel); 
     stateDisplayPanel.centerX = View.layoutBounds.width/2;
     stateDisplayPanel.top = 10;
-
+*/
     //Track Design Buttons
-    var trackDesignButtons = new TrackDesignButtons( model, View );
-    View.addChild(trackDesignButtons);
-    trackDesignButtons.top = screenHeight - earthHeight + 10;
-    trackDesignButtons.left = trackCreationPanel.right + 10;
+    var trackDesignPanel = new TrackDesignPanel( model, View );
+    View.addChild(trackDesignPanel);
+    trackDesignPanel.top = View.layoutBounds.top + 10;
+    trackDesignPanel.centerX = View.layoutBounds.centerX;
 
     //hide the trackCreationPanel when trackDesignState changes
     model.trackDesignStateProperty.link( function (state) {
 	var value = (state == 'addTrack') ? true:false;
 	trackCreationPanel.visible = value;		
+//	trackCreationPanel.visible = true;		
+	
     } );
 
     // Skater Node
     var allowWebGL = window.phetcommon.getQueryParameter( 'webgl' ) !== 'false';
     var webGLSupported = Util.isWebGLSupported && allowWebGL;
     var renderer = webGLSupported ? 'webgl' : 'svg';
+//var renderer
     var skaterNode = new SkaterNode(
       model.skater,
       this,
@@ -249,52 +155,52 @@ define( function( require ) {
       model.getPhysicalTracks.bind( model ),
       renderer
     );
-    View.addChild(skaterNode);
-    model.simStateProperty.link( function(state) { //display skaterNode only in simuation screen
-	skaterNode.visible = state =='simulation'? true:false;	
-    } );
 
+    model.skater.trigger('updated');
+    View.addChild(skaterNode);
+
+//Bar Graph Nodes
+
+    var energyBarGraph = new Node();
+    var barGraphBackground = new BarGraphBackground( model.skater, model.barGraphVisibleProperty, model.clearThermal.bind( model ) );
+    energyBarGraph.addChild( barGraphBackground );
+    energyBarGraph.addChild( new BarGraphForeground( model.skater, barGraphBackground, model.barGraphVisibleProperty, renderer ) );
+    energyBarGraph.rotate(Math.PI/2);
+    energyBarGraph.scale(0.82);
+    energyBarGraph.left = View.layoutBounds.left + 10;
+    energyBarGraph.top = View.interfaceHeight + 15;
+    View.addChild(energyBarGraph);
+    model.barGraphVisibleProperty.linkAttribute( energyBarGraph, 'visible' ); 
+
+// Force Vectors
+    var fV = new ForceVectors( model, skaterNode, View );
+   
+//Display Panels
+    var displayPanel = new DisplayPanelFirst(model,View);
+    View.addChild(displayPanel);
+    displayPanel.top = energyBarGraph.top;
+    displayPanel.left = energyBarGraph.right + 10;
+
+//Property Links
+    model.simStateProperty.link( function(state) { 
+    	var visibility = state =='simulation'? true:false;	
+    	//display skaterNode only in simuation screen
+	skaterNode.visible = visibility;
+	//display barGraph only 
+	model.barGraphVisibleProperty.set(visibility);
+	//display barGraph only 
+	displayPanel.visible = visibility;
+	//heights Panels
+//	View.HeightsPanel.visible = visibility;
+
+    } );
     var valueText = new Text( "",new PhetFont(14) );
     View.addChild(valueText);
     valueText.centerY=100;
-    model.skater.trigger('updated');
 
-    model.skater.kineticEnergyProperty.link( function(value) {
-//	valueText.text = value;
+    model.skater.normalForceProperty.link( function(value) {
+//	valueText.text = value.x;
     } );
-
-    
-/*
-  //Track sliders
-    var trackSliders = model.allTracks.map(addTrackSlider).getArray();
-    var i=0;
-    trackSliders.forEach ( function ( sliderNode ) {
-	    View.addChild(sliderNode);
-	    sliderNode.left = 10;
-	    sliderNode.centerY = 100*i;
-	    i=i+1;
-    } );
-*/
-
-//scale slider, not needed anymore
-/*
-     var scaleSlider = new ControlSlider(
-     'Scale', 
-     '', 
-     model.trackScaleProperty, 
-     new Range(0.5,1), 
-     function(val){return val;},
-     new Property(true),
-     {delX:0.05, decimals:2}
-      );
-      View.addChild(scaleSlider);
-*/
-/*
-      model.trackScaleProperty.link( function ( ) {
-	trackNode.track = model.track;
-	trackNode.updateTrackShape();
-      } );
-*/      
 
 
   } //end of function
@@ -330,7 +236,7 @@ define( function( require ) {
       this.translate( offsetX, offsetY );
 
 //      this.groundNode.layout( offsetX, offsetY, width, height, scale );
-//      this.gridNode.layout( offsetX, offsetY, width, height, scale );
+      this.gridNode.layout( offsetX, offsetY, width, height, scale );
 
       this.availableViewBounds = new DotRectangle( -offsetX, -offsetY, width / scale, this.modelViewTransform.modelToViewY( 0 ) + Math.abs( offsetY ) );
 /*

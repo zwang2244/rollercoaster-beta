@@ -11,6 +11,7 @@ define( function( require ) {
 
   // modules
   var inherit = require( 'PHET_CORE/inherit' );
+  var Property = require( 'AXON/Property' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
   var Util = require( 'DOT/Util' );
@@ -90,12 +91,46 @@ define( function( require ) {
       startingTrack: null,
 
       // Position of the skater's head, for positioning the pie chart.
-      headPosition: new Vector2( 0, 0 )
+      headPosition: new Vector2( 0, 0 ),
+
+      //acceleration,forces
+      acceleration: new Vector2( 0, 0 ),
+
+      //normal force
+      normalForce: new Vector2( 0, 0 ),
+
+      friction: 0,
+
+      netForce: new Vector2( 0, 0),
+
+      //max Accln & position
+      maxA: 0,
+
+      maxAPos: new Vector2(0,0),
+      
+      //max Speed
+      maxU: 0,
+
+      maxUPos: new Vector2(0,0),
+
     } );
 
     this.addDerivedProperty( 'speed', ['velocity'], function( velocity ) {
       return velocity.magnitude();
     } );
+
+    this.addDerivedProperty( 'weight', ['mass','gravity'], function( mass, gravity ) {
+      return new Vector2( 0, mass*gravity);
+    } );
+
+    this.addDerivedProperty( 'frictionForce', ['normalForce','friction'], function( normalForce, friction ) {
+      return normalForce.rotated(Math.PI/2).times(friction);
+    } );
+
+    this.addDerivedProperty( 'netForce', ['frictionForce','normalForce','weight'], function( frictionForce, normalForce, weight ) {
+      return normalForce.plus(frictionForce.plus(weight));
+    } );
+
 
     // Zero the kinetic energy when dragging, see #22
     this.draggingProperty.link( function( dragging ) {
@@ -150,12 +185,15 @@ define( function( require ) {
     reset: function() {
       // set the angle to zero before calling PropertySet.prototype.reset so that the optimization for
       // SkaterNode.updatePosition is maintained, without showing the skater at the wrong angle
+
       this.angle = 0;
-      PropertySet.prototype.reset.call( this );
+      var friction = this.friction; //do not reset friction, will be controlled by model
+//      PropertySet.prototype.reset.call( this );
+      this.friction = friction;
       this.updateEnergy();
 
       // Notify the graphics to re-render.  See #223
-      this.trigger( 'updated' );
+     this.trigger( 'updated' );
     },
 
     // Move the skater to her initial position, but leave the friction and mass the same, see #237
