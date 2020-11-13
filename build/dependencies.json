@@ -1,0 +1,59 @@
+{
+  "chipper": {
+    "sha": "614504885811ab1819be4927ccd6922120375514",
+    "branch": "master"
+  },
+  "sherpa": {
+    "sha": "3e191e57bdb12109664e7870bdcab3f2487afe45",
+    "branch": "master"
+  },
+  "sun": {
+    "sha": "cd51b22c96f0527abf349039c9656c59b866ccdc",
+    "branch": "master"
+  },
+  "scenery-phet": {
+    "sha": "3caae45e483ddfdc2d43032552b7aa8840edb7e3",
+    "branch": "master"
+  },
+  "scenery": {
+    "sha": "a7ae0b7d16f1c3de82f0e37cb0e36ee84b3ee4de",
+    "branch": "master"
+  },
+  "phetcommon": {
+    "sha": "d979f0cf3c0b0db867ed8b06676593277a0fbbc7",
+    "branch": "master"
+  },
+  "phet-core": {
+    "sha": "a4408a40d9d23706b245df422835841e7d7a36db",
+    "branch": "master"
+  },
+  "kite": {
+    "sha": "c262daa0938f79862e5ef5cf6780197091d9b6d6",
+    "branch": "master"
+  },
+  "joist": {
+    "sha": "665830ef9ff04e09126ec72e58bef6a9e0963b7d",
+    "branch": "master"
+  },
+  "dot": {
+    "sha": "05f3b7bf2ec86572a70c626518e642b01743f79b",
+    "branch": "master"
+  },
+  "brand": {
+    "sha": "b0ed863f99d93c7a4912b3b4010a011aa1f3d05c",
+    "branch": "master"
+  },
+  "axon": {
+    "sha": "bd88cd7e2d2be78665ad1d28eff77ddd97784f27",
+    "branch": "master"
+  },
+  "assert": {
+    "sha": "e4595f5eae375c15fa9aaba9511c52dbc1b0f2c6",
+    "branch": "master"
+  },
+  "rollercoaster": {
+    "sha": "a173e61ff017369c73d81da1fb7fb321932a06f0",
+    "branch": "master"
+  },
+  "comment": "# rollercoaster 1.0.0 Sun Jan 15 2017 20:45:39 GMT-0600 (Central Standard Time)"
+}

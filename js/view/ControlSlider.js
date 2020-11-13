@@ -58,12 +58,12 @@ Object
       thumbSize: new Dimension2( 22, 45 ),
       ticks: [
           {
-            title: scaleFunction(trackRange.min),
+            title: scaleFunction(trackRange.min).toFixed(options.decimals),
             value: trackRange.min
           },
 
           {
-            title: scaleFunction(trackRange.max),
+            title: scaleFunction(trackRange.max).toFixed(options.decimals),
             value: trackRange.max
           }
         ],
@@ -114,7 +114,8 @@ Object
     plusButton.touchArea = new Bounds2( plusButton.localBounds.minX - 20, plusButton.localBounds.minY - 5,
         plusButton.localBounds.maxX + 20, plusButton.localBounds.maxY + 20 );
 
-    var minusButton = new ArrowButton( 'left', function propertyMinus() {
+    var minusButton = new ArrowButton( 'left', function propertyMinus() 
+    { 
       trackProperty.set( Util.toFixedNumber( parseFloat( Math.max( trackProperty.get() - options.delX, trackRange.min ) ), options.decimals ) );
       }, 
       { arrowFill: options.buttonColor }
@@ -193,8 +194,8 @@ Object
     trackProperty.link( function( value ) {
       valueLabel.text = StringUtils.format( pattern_0value_1units, scaleFunction(trackProperty.value).toFixed(options.decimals), units);
       valueLabel.center = valueField.center; // keep the value centered in the field
-      plusButton.enabled = ( value < trackRange.max );
-      minusButton.enabled = ( value > trackRange.min );
+      plusButton.enabled = ( value <= trackRange.max );
+      minusButton.enabled = ( value >= trackRange.min );
     } );
 
    displayVisibleProperty.link( function ( value ) {

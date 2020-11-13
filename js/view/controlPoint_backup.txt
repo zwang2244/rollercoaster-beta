@@ -1,0 +1,75 @@
+
+	      drop = [
+		new ControlPoint( -5, 5 ),
+		new ControlPoint( -4, 4.85 ),
+		new ControlPoint( -3.25, 4 ),
+		new ControlPoint( -2.5, 2.5 ),
+		new ControlPoint( -1.75, 1 ),
+		new ControlPoint( -1, 0.15 ),
+		new ControlPoint( 0, 0 ),
+	      ];
+
+	      bank = [
+		new ControlPoint( 5, 5 ),
+		new ControlPoint( 4, 4.85 ),
+		new ControlPoint( 3.25, 4 ),
+		new ControlPoint( 2.5, 2.5 ),
+		new ControlPoint( 1.75, 1 ),
+		new ControlPoint( 1, 0.15 ),
+		new ControlPoint( 0, 0 ),
+	      ];
+
+	      hill = [
+		new ControlPoint( -4, 0 ),
+		new ControlPoint( -2.5, 0.5 ),
+		new ControlPoint( -1.5, 3 ),
+		new ControlPoint( 0, 5),
+		new ControlPoint( 1.5, 3 ),
+		new ControlPoint( 2.5, 0.5 ),
+		new ControlPoint( 4, 0 ),
+	      ];
+/*
+	      loop = [
+		new ControlPoint( -3, 0 ),
+		new ControlPoint( -2, 0 ),
+		new ControlPoint( -0.75, 0.5 ),
+		new ControlPoint( 1.5, 3 ),
+		new ControlPoint( 0, 5),
+		new ControlPoint( -1.5, 3 ),
+		new ControlPoint( 0.75, 0.5 ),
+		new ControlPoint( 2, 0 ),
+		new ControlPoint( 3, 0 ),
+	      ];
+*/
+	      loop = [
+		new ControlPoint( -3, 0 ),
+//		new ControlPoint( -2, 0 ),
+		new ControlPoint( -0.75, 0.5 ),
+		new ControlPoint( 1.5, 3 ),
+		new ControlPoint( 0, 5),
+		new ControlPoint( -1.5, 3 ),
+		new ControlPoint( 0.75, 0.5 ),
+//		new ControlPoint( 2, 0 ),
+		new ControlPoint( 3, 0 ),
+	      ];
+
+	      flat = [
+		new ControlPoint( 0, 0 ),
+		new ControlPoint( 1.5, 0 ),
+		new ControlPoint( 3, 0 ),
+	      ];
+
+Revision 1
+
+	      drop = [
+		new ControlPoint( -5, 5 ),
+		new ControlPoint( -4.28, 4.95 ),
+		new ControlPoint( -3.2, 4.40 ),
+		new ControlPoint( -2.5, 2.5 ),
+		new ControlPoint( -1.8, 0.60 ),
+		new ControlPoint( -0.72, 0.05 ),
+		new ControlPoint( 0, 0 ),
+	      ];
+
+	 
+

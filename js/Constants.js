@@ -9,8 +9,8 @@ define( function( require ) {
 
   var Dimension2 = require( 'DOT/Dimension2' );
 
-  var minMass = 25;// kg
-  var maxMass = 100;
+  var minMass = 40;// kg
+  var maxMass = 60;
 
   return {
     SLIDER_OPTIONS: {

@@ -33,6 +33,7 @@ define( function( require ) {
   var SkaterState = require( 'ROLLERCOASTER/model/SkaterState' );
 
   var MAX_NUMBER_CONTROL_POINTS = 12;
+  var MIN_DIST = 0.25;
 
   // Reuse empty object for creating SkaterStates to avoid allocations
   var EMPTY_OBJECT = {};
@@ -55,16 +56,18 @@ define( function( require ) {
   function SimulationModel() {
 
      var model=this;
-     var frictionAllowed=true;
+     var frictionAllowed=false;
   
    //property set : model property parameters
     PropertySet.call( this, {
 
       // Model for visibility of various view parameters
-      pieChartVisible: false,
+      speedFlagVisible: false,
+      accFlagVisible: false,
       barGraphVisible: false,
       gridVisible: false,
       speedometerVisible: false,
+      vectorsVisible: false,
 
       // Enabled/disabled for the track editing buttons
       editButtonEnabled: false,
@@ -74,13 +77,13 @@ define( function( require ) {
       simState: 'design',
 
       // Whether the sim is paused or running
-      paused: false,
+      paused: true,
 
       // speed of the model, either 'normal' or 'slow'
       speed: 'normal',
 
       // Coefficient of friction (unitless) between skater and track
-      friction: frictionAllowed ? 0.05 : 0,
+      friction: 0,
 
       // Whether the skater should stick to the track like a roller coaster, or be able to fly off like a street
       detachable: false,
@@ -95,73 +98,91 @@ define( function( require ) {
       // to determine the state of the track design panel (height, friction, deleteTrack, addTrack)
       trackDesignState: 'addTrack',
       
+      //rollerState: 'start', 'end'
+      rollerState: 'start',
+      
     } ); 
 
     this.allTracks = new ObservableArray();
     this.tracks = new ObservableArray();
-    this.previousTracks = null; //stored value of previously used tracks
-    this.mergedTrackCount = 0;
+//    this.previousTracks = null; //stored value of previously used tracks
+    this.previousTracks = new ObservableArray(); //stored value of previously used tracks
+    var mergedTrackCount = 0;
+    this.mergedTrackCount = mergedTrackCount;
       // Shape types
       // For the double well, move the left well up a bit since the interpolation moves it down by that much, and we
       // don't want the skater to go to y<0 while on the track.  Numbers determined by trial and error.
-      var drop, bank, hill, loop;
+      var drop, bank, hill, loop, flat;
 
 	      drop = [
-		new ControlPoint( -5, 5 ),
-		new ControlPoint( -4, 4.85 ),
-		new ControlPoint( -3.25, 4 ),
-		new ControlPoint( -2.5, 2.5 ),
-		new ControlPoint( -1.75, 1 ),
-		new ControlPoint( -1, 0.15 ),
+		new ControlPoint( -6, 5 ),
+		new ControlPoint( -5, 4.90 ),
+		new ControlPoint( -3.9, 4.25 ),
+		new ControlPoint( -3, 2.5 ),
+		new ControlPoint( -2.1, 0.75 ),
+		new ControlPoint( -1, 0.10 ),
 		new ControlPoint( 0, 0 ),
 	      ];
 
 	      bank = [
-		new ControlPoint( 5, 5 ),
-		new ControlPoint( 4, 4.85 ),
-		new ControlPoint( 3.25, 4 ),
-		new ControlPoint( 2.5, 2.5 ),
-		new ControlPoint( 1.75, 1 ),
-		new ControlPoint( 1, 0.15 ),
+		new ControlPoint( 6, 5 ),
+		new ControlPoint( 5, 4.90 ),
+		new ControlPoint( 3.9, 4.25 ),
+		new ControlPoint( 3, 2.5 ),
+		new ControlPoint( 2.1, 0.75 ),
+		new ControlPoint( 1, 0.10 ),
 		new ControlPoint( 0, 0 ),
 	      ];
 
 	      hill = [
-		new ControlPoint( -4, 0 ),
-		new ControlPoint( -2.5, 0.5 ),
+		new ControlPoint( -4.25, 0 ),
+		new ControlPoint( -2.5, 0.60 ),
 		new ControlPoint( -1.5, 3 ),
 		new ControlPoint( 0, 5),
 		new ControlPoint( 1.5, 3 ),
-		new ControlPoint( 2.5, 0.5 ),
-		new ControlPoint( 4, 0 ),
+		new ControlPoint( 2.5, 0.60 ),
+		new ControlPoint( 4.25, 0 ),
 	      ];
 
 	      loop = [
 		new ControlPoint( -3, 0 ),
-		new ControlPoint( -2, 0 ),
 		new ControlPoint( -0.75, 0.5 ),
 		new ControlPoint( 1.5, 3 ),
 		new ControlPoint( 0, 5),
 		new ControlPoint( -1.5, 3 ),
 		new ControlPoint( 0.75, 0.5 ),
-		new ControlPoint( 2, 0 ),
 		new ControlPoint( 3, 0 ),
 	      ];
 
-      var dropTrack = new Track( this, this.tracks, drop, true, null, this.availableModelBoundsProperty, {trackName:'Drop', hScale: 0.55, vScale: 0.6} );
-      var bankTrack = new Track( this, this.tracks, bank, true, null, this.availableModelBoundsProperty, {trackName:'Bank', hScale: 0.55, vScale: 0.6} );
-      var hillTrack = new Track( this, this.tracks, hill, true, null, this.availableModelBoundsProperty, {trackName:'Hill', hScale: 0.55, vScale: 0.6} );
-      var loopTrack = new Track( this, this.tracks, loop, true, null, this.availableModelBoundsProperty, {trackName:'Loop', hScale: 0.55, vScale: 0.6} );
-      
-      bankTrack.physical = true;
+	      flat = [
+		new ControlPoint( 0, 0 ),
+		new ControlPoint( 1, 0 ),
+		new ControlPoint( 2, 0 ),
+	      ];
+
+//default scales: 0.55H,0.6V
+//changed to 0.5,0.5
+     var vSc1 = 0.5;
+     var hSc1 = 0.5;
+      var dropTrack = new Track( this, this.tracks, drop, true, null, this.availableModelBoundsProperty,{trackName:'Drop', hScale: vSc1, vScale: hSc1} );
+      var bankTrack = new Track( this, this.tracks, bank, true, null, this.availableModelBoundsProperty,
+      	{trackName:'Bank', hScale: vSc1, vScale: hSc1, vRange: new Range(0,1)} );
+      var hillTrack = new Track( this, this.tracks, hill, true, null, this.availableModelBoundsProperty, {trackName:'Hill', hScale: vSc1, vScale: hSc1} );
+      var loopTrack = new Track( this, this.tracks, loop, true, null, this.availableModelBoundsProperty, {trackName:'Loop', hScale: vSc1, vScale: hSc1} );
+      var flatTrack = new Track( this, this.tracks, flat, true, null, this.availableModelBoundsProperty, {trackName:'Flat', hScale: vSc1, vScale: hSc1} );
+
+      model.flatTrack = flatTrack;
+/*      bankTrack.physical = true;
       dropTrack.physical = true;
+      flatTrack.physical = true;
+      loopTrack.physical = true;
+      hillTrack.physical = true;*/
 
       // Flag to indicate whether the skater transitions from the right edge of this track directly to the ground
       // see #164
 //      slopeTrack.slopeToGround = true;
 
 	this.allTracks.addAll([dropTrack, bankTrack, hillTrack, loopTrack]);
-//	this.tracks.addAll([bankTrack, dropTrack]);
 
       this.trackScaleProperty.link( function (scale )
       {
@@ -188,6 +209,7 @@ define( function( require ) {
 
     // If the mass changes while the sim is paused, trigger an update so the skater image size will update, see #115
     this.skater.property( 'mass' ).link( function() { if ( model.paused ) { model.skater.trigger( 'updated' ); } } );
+    this.frictionProperty.link( function (c) { model.skater.friction = c; } );
 
    } //end of constructor
 
@@ -195,9 +217,15 @@ define( function( require ) {
     reset: function()
     {
 	PropertySet.prototype.reset.call( this );
+	this.mergedTrackCount = 0;
+//	this.skater.reset();
+	this.allTracks.forEach( function(track) {
+		track.reset();
+	} );
+	this.previousTracks.clear();
 	this.clearTracks();
     },
-    
+
     // step one frame, assuming 60fps
     manualStep: function() {
       var skaterState = new SkaterState( this.skater, EMPTY_OBJECT );
@@ -232,7 +260,6 @@ define( function( require ) {
         }
 
 /*
-	//DINESH
         var updatedState = null;
 //       updatedState = this.stepFreeFall(dt,skaterState,false);
          updatedState = (skaterState.track) ? this.stepTrack( dt, skaterState ) : skaterState;
@@ -284,14 +311,15 @@ define( function( require ) {
       }
     },
 
-    // The skater moves along the ground with the same coefficient of fraction as the tracks, see #11
+    // The skater moves along the ground with the same coefficient of friction as the tracks, see #11
     stepGround: function( dt, skaterState ) {
       var x0 = skaterState.positionX;
       var frictionMagnitude = (this.friction === 0 || skaterState.getSpeed() < 1E-2) ? 0 :
                               this.friction * skaterState.mass * skaterState.gravity;
       var acceleration = Math.abs( frictionMagnitude ) * (skaterState.velocityX > 0 ? -1 : 1) / skaterState.mass;
-
       var v1 = skaterState.velocityX + acceleration * dt;
+      this.skater.normalForce = new Vector2(0,-1*skaterState.mass * skaterState.gravity); //normal force = weight
+      this.skater.acceleration = new Vector2(acceleration,0);
 
       // Exponentially decay the velocity if already nearly zero, see #138
       if ( this.friction !== 0 && skaterState.getSpeed() < 1E-2 ) {
@@ -335,6 +363,10 @@ define( function( require ) {
       var initialEnergy = skaterState.getTotalEnergy();
 
       var acceleration = new Vector2( 0, skaterState.gravity );
+      this.skater.acceleration = acceleration;
+
+      this.skater.normalForce = new Vector2(0,0); //normal force = 0 free fall
+
       var proposedVelocity = skaterState.getVelocity().plus( acceleration.times( dt ) );
       var position = skaterState.getPosition();
       var proposedPosition = position.plus( proposedVelocity.times( dt ) );
@@ -386,7 +418,7 @@ define( function( require ) {
     },
 
     clearTracks: function() {
-
+	
 	this.tracks.clear();
 //        this.addDraggableTracks();
       // For the first two screens, make the default track physical
@@ -493,7 +525,7 @@ define( function( require ) {
         var newPosition = track.getPoint( u );
         var newPotentialEnergy = -skaterState.mass * skaterState.gravity * newPosition.y;
         var newThermalEnergy = initialEnergy - newKineticEnergy - newPotentialEnergy;
-
+	var position = track.getTrackStartingPoint();
         // Sometimes (depending on dt) the thermal energy can go negative by the above calculation, see #141
         // In that case, set the thermal energy to zero and reduce the speed to compensate.
         if ( newThermalEnergy < skaterState.thermalEnergy ) {
@@ -648,8 +680,19 @@ define( function( require ) {
       // Component-wise math to prevent allocations, see #50
       var netForceX = this.getNetForceWithoutNormalX( skaterState );
       var netForceY = this.getNetForceWithoutNormalY( skaterState );
+      var netForce = new Vector2(netForceX,netForceY);
       var netForceMagnitude = Math.sqrt( netForceX * netForceX + netForceY * netForceY );
       var netForceAngle = Math.atan2( netForceY, netForceX );
+
+      this.skater.normalForce = this.getNormalForce(skaterState);
+      this.skater.acceleration = this.skater.normalForce.plus(netForce).times(1/skaterState.mass);
+      var acceleration = this.skater.acceleration.magnitude();
+      this.skater.maxAPos = (this.skater.maxA < acceleration) ? this.skater.position.copy() : this.skater.maxAPos;
+      this.skater.maxA = (this.skater.maxA < acceleration) ? acceleration: this.skater.maxA ;
+
+      var spd = this.skater.speedProperty.get();
+      this.skater.maxUPos = (this.skater.maxU < spd) ? this.skater.position.copy() : this.skater.maxUPos;
+      this.skater.maxU = Math.max(this.skater.maxU,spd);
 
       // Get the net force in the direction of the track.  Dot product is a * b * cos(theta)
       var a = netForceMagnitude * Math.cos( skaterState.track.getModelAngleAt( u ) - netForceAngle ) / skaterState.mass;
@@ -782,6 +825,10 @@ define( function( require ) {
           return correctedState;
         }
         else {
+
+        //roller has come to stop
+        this.rollerStateProperty.set('end');
+/*
           // Fly off the left or right side of the track
           // Off the edge of the track.  If the skater transitions from the right edge of the 2nd track directly to the
           // ground then do not lose thermal energy during the transition, see #164
@@ -803,7 +850,7 @@ define( function( require ) {
 
             // Step after switching to free fall, so it doesn't look like it pauses
             return this.stepFreeFall( dt, nudgedState, true );
-          }
+          } */
         }//
       }
     },
@@ -1011,12 +1058,16 @@ define( function( require ) {
     },
 
     // Return to the starting position on the track
-    returnSkaterStart: function() {
+    returnSkaterStart: function() { //I think Dinesh wrote it ?
       if(this.getAllTracks())
       {
 	var track = this.getAllTracks()[0];
 	var skater = this.skater;
-	var position = track.getTrackStartingPoint();
+//	var position = track.getTrackStartingPoint();
+	var position = track.getLeftControlPointXY();
+	position = new Vector2(position.x+0.2, position.y);
+	//add a small offset to that left most controlPoint to make it easier for stater to move
+		
         var closestTrackAndPositionAndParameter = this.getClosestTrackAndPositionAndParameter( position, this.getPhysicalTracks() );
         var closestPoint = closestTrackAndPositionAndParameter.point;
         var targetTrack = closestTrackAndPositionAndParameter.track;
@@ -1086,29 +1137,30 @@ define( function( require ) {
     var bestPoint = null;
     var t,distance;
     var controlPoint = [track.controlPoints[0], track.controlPoints[track.controlPoints.length - 1]];
-    var bestOtherPoint = null;
+    var bestOtherPoint = controlPoint[0];
 
-    for(var k=0; k < 2 ; k++ ) //2controlPoints of track
+    for(var k=0; k < 2 ; k++ ) //2 controlPoints for given track
     {
-	    for(var i=0; i < tracks.length; i++)
+	    for(var i=0; i < tracks.length; i++) 
 	    {
 	    	t=tracks[i];
-		if(t.trackName != track.trackName)
+		if(t.trackName !== track.trackName)
 		{
 		      var myPoints = [t.controlPoints[0], t.controlPoints[t.controlPoints.length - 1]];
-		      for(var j=0;j<2;j++)
+		      for(var j=0; j<2; j++) // 2 control points for each track
 		      {
 			distance = myPoints[j].position.distance(controlPoint[k].position);
-			if(bestDistance==null) { bestDistance = distance; bestPoint = myPoints[j]; }
+			if(bestDistance==null) { bestDistance = distance; bestPoint = myPoints[j];}
 			bestPoint = (distance < bestDistance) ? myPoints[j] : bestPoint;
 			bestDistance = (distance < bestDistance) ? distance : bestDistance;
-			bestOtherPoint = controlPoint[k];
+			bestOtherPoint = (distance < bestDistance) ? controlPoint[k] : bestOtherPoint;
 		      }
 		}
 	      }
      }
 //     return bestDistance;
-      if (bestDistance < 1) {
+      if (bestDistance < MIN_DIST) {
+//	bestOtherPoint.snapTarget = bestPoint;
         if( bestOtherPoint == controlPoint[0]) {
         	track.controlPoints[0].snapTarget = bestPoint;
          }
@@ -1126,8 +1178,10 @@ define( function( require ) {
     joinTracks: function( track ) {
     var flag=0;
       var connectedPoint = track.getSnapTarget();
-      for ( var i = 0; i < this.getPhysicalTracks().length; i++ ) {
-        var otherTrack = this.getPhysicalTracks()[i];
+      var physicalTracks = this.getPhysicalTracks();
+      var otherTrack;
+      for ( var i = 0; i < physicalTracks.length; i++ ) {
+         otherTrack = physicalTracks[i];
         if ( otherTrack.containsControlPoint( connectedPoint ) ) {
           this.joinTrackToTrack( track, otherTrack );
           flag=1;
@@ -1235,6 +1289,7 @@ define( function( require ) {
       this.tracks.add( newTrack1 );
       this.tracks.add( newTrack2 );
 
+
       // Smooth the new tracks, see #177
       newTrack1.smooth( controlPointIndex - 1 );
       newTrack2.smooth( 0 );
@@ -1305,8 +1360,8 @@ define( function( require ) {
         firstTrackBackward();
         secondTrackBackward();
       }
-      this.mergedTrackCount++;
-      var trackName = "Track"+this.mergedTrackCount;
+      this.mergedTrackCount = this.mergedTrackCount + 1;
+      var trackName = "Track" + this.mergedTrackCount.toString();
       var newTrack = new Track( this, 
       	this.tracks, 
       	points,
@@ -1436,6 +1491,8 @@ define( function( require ) {
     },
 
    } ); //end of return
+
+
 
 } ); //end of define
 
