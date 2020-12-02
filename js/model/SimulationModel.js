@@ -621,7 +621,6 @@ define( function( require ) {
       // Friction force should not exceed sum of other forces (in the direction of motion), otherwise the friction could
       // start a stopped object moving. Hence we check to see if the object is already stopped and don't add friction
       // in that case
-
       if ( this.friction === 0 || skaterState.getSpeed() < 1E-2 ) {
         return 0;
       }
@@ -1178,25 +1177,15 @@ define( function( require ) {
     // Find whatever track is connected to the specified track and join them together to a new track
     joinTracks: function( track ) {
     var flag=0;
-
       var connectedPoint = track.getSnapTarget();
       var physicalTracks = this.getPhysicalTracks();
       var otherTrack;
       for ( var i = 0; i < physicalTracks.length; i++ ) {
          otherTrack = physicalTracks[i];
         if ( otherTrack.containsControlPoint( connectedPoint ) ) {
-
-          //Zhilin
-          //if they are not overlap
-          // if((track.controlPoints[0].sourcePosition.x > otherTrack.controlPoints[0].sourcePosition.x) && 
-          //   (track.controlPoints[track.controlPoints.length - 1].sourcePosition.x < otherTrack.controlPoints[otherTrack.controlPoints.length - 1].sourcePosition.x)){
-          //   continue;
-          // }
-
           this.joinTrackToTrack( track, otherTrack );
           flag=1;
           break;
-
         }
       }
       if(flag==1) {
@@ -1259,7 +1248,8 @@ define( function( require ) {
         newTrack.bumpAboveGround();
 
         //Zhilin
-        newTrack.bumpAsideWindow();
+        newTrack.bumpAsideLeftWindow();
+        newTrack.bumpAsideRightWindow();
 
         this.tracks.add( newTrack );
       }
@@ -1350,8 +1340,6 @@ define( function( require ) {
 	points.push( b.controlPoints[i].copyWithSnap() );
       };
 
-      
-
       // Only include one copy of the snapped point
       // Forward Forward
       if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[0] ) {
@@ -1399,7 +1387,9 @@ define( function( require ) {
       // When tracks are joined, bump the new track above ground so the y value (and potential energy) cannot go negative,
       // and so it won't make the "return skater" button get bigger, see #158
       newTrack.bumpAboveGround();
-      newTrack.bumpAsideWindow();
+      //Zhilin
+      newTrack.bumpAsideLeftWindow();
+      newTrack.bumpAsideRightWindow();
       this.tracks.add( newTrack );
 
       // Move skater to new track if he was on the old track, by searching for the best fit point on the new track
