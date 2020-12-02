@@ -231,6 +231,7 @@ define( function( require ) {
 
       // center horizontally
       else if ( scale === height / this.layoutBounds.height ) {
+        //offsetX = (width / scale - this.layoutBounds.width);
         offsetX = (width - this.layoutBounds.width * scale) / 2 / scale;
       }
       this.translate( offsetX, offsetY );

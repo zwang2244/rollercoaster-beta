@@ -237,6 +237,7 @@ define( function( require ) {
         }
 
         track.bumpAboveGround();
+        track.bumpAsideWindow();
         track.dragging = false;
         track.dropped = true;
 

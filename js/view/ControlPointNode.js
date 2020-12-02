@@ -173,6 +173,7 @@ define( function( require ) {
             model.trackModified( track );
           }
           track.bumpAboveGround();
+          track.bumpAsideWindow();
           track.dragging = false;
 
           // Show the 'control point editing' ui, but only if the user didn't drag the control point.

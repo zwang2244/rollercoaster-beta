@@ -574,7 +574,7 @@ define( function( require ) {
         var ptX = SplineEvaluation.atNumber( this.xSpline, a );
         var ptY = SplineEvaluation.atNumber( this.ySpline, a );
 
-        var dx = prevX - ptX;
+        var dx = prexf - ptX;
         var dy = prevY - ptY;
 
         sum += Math.sqrt( dx * dx + dy * dy );
@@ -702,6 +702,54 @@ define( function( require ) {
         this.translate( 0, -lowestY );
       }
     },
+    //////below Zhilin changes
+    getLowestX: function() {
+      if ( !this.ySearchPoints ) {
+        this.xSearchPoints = SplineEvaluation.atArray( this.xSpline, this.searchLinSpace );
+        this.ySearchPoints = SplineEvaluation.atArray( this.ySpline, this.searchLinSpace );
+      }
+
+      var min = Number.POSITIVE_INFINITY;
+      var minIndex = -1;
+      var x;
+      for ( var i = 0; i < this.xSearchPoints.length; i++ ) {
+        x = this.xSearchPoints[i];
+        if ( x < min ) {
+          min = x;
+          minIndex = i;
+        }
+      }
+
+      // Increase resolution in the neighborhood of y
+      var foundU = this.searchLinSpace[minIndex];
+
+      var minBound = foundU - this.distanceBetweenSamplePoints;
+      var maxBound = foundU + this.distanceBetweenSamplePoints;
+
+      var smallerSpace = numeric.linspace( minBound, maxBound, 200 );
+      var refinedSearchPoints = SplineEvaluation.atArray( this.xSpline, smallerSpace );
+
+      min = Number.POSITIVE_INFINITY;
+      for ( i = 0; i < refinedSearchPoints.length; i++ ) {
+        x = refinedSearchPoints[i];
+        if ( x < min ) {
+          min = x;
+        }
+      }
+
+      return min;
+    },
+
+    // If any part of the track is below ground, move the whole track up so it rests at y=0 at its minimum, see #71
+    // Called when user releases track or a control point after dragging
+    bumpAsideWindow: function() {
+      var lowestX = this.getLowestX();
+      if ( lowestX < -9.5 ) {
+        this.translate(-9.5-lowestX, 0 );
+      }
+    },
+
+    /////////above Zhilin change
 
     /**
      * Smooth out the track so it doesn't have any sharp turns, see #177

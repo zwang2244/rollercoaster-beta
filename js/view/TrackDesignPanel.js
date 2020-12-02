@@ -157,7 +157,10 @@ define( function( require ) {
 			continue;
 		}
 		i++;
-	}
+  }
+ 
+
+
 
 //	if(merges < maxMerges)
 	if(model.getAllTracks().length !==1 ) //make sure there is only one track
@@ -174,14 +177,32 @@ define( function( require ) {
 		} );
 		model.previousTracks.clear();
 		model.mergedTrackCount = 0;
-/*
-		for(var i=0;i<unmerged_tracks.length;i++)
-		{
-			var track=unmerged_tracks[i];
-			track.interactive=true;
-			model.tracks.add(track);
-		}
-*/
+  /*
+      for(var i=0;i<unmerged_tracks.length;i++)
+      {
+        var track=unmerged_tracks[i];
+        track.interactive=true;
+        model.tracks.add(track);
+      }
+  */
+
+      //Zhilin
+    // var n =0;
+    // var m =0;
+    // while( (n < trackLength ) )
+    // {
+    //   var t1 = tracks[n];
+    //   while((m > n ) && (m < trackLength)){
+    //     var t2 = tracks[m];
+    //     // calculate the overlap
+    //     valueText.text = "x value" + t1.x;
+    //     valueText.centerX = View.layoutBounds.centerX;
+    //     m++;
+    //   }
+    //   n++;
+    // }
+
+
 		return false;
 	}
 	else
@@ -388,13 +409,13 @@ define( function( require ) {
     mergeTracksButton.left = adjHeightsButton.right + 10;
     mergeTracksButton.top = adjHeightsButton.top;
 
-    resetButtonNode.right =  View.layoutBounds.right - 5;
+    resetButtonNode.right =  View.layoutBounds.right + 100;
     resetButtonNode.top =  View.interfaceHeight + 10;
     checkBoxes.right = View.layoutBounds.right - 10;
     checkBoxes.top = View.layoutBounds.top + 5;
     eraserButtonNode.centerX = resetButtonNode.centerX;
     eraserButtonNode.top = resetButtonNode.bottom + 10;
-    massFrictionPanel.right = resetButtonNode.left - 20;
+    massFrictionPanel.right = resetButtonNode.left - 120;
     massFrictionPanel.top = View.interfaceHeight + 15;
 
     doneButton.centerX=60;
