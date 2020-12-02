@@ -66,7 +66,7 @@ define( function( require ) {
 
     var valueXMargin = 8;
     var valueYMargin = 5;
-    var ItemRectangle = new Rectangle( 0, 0, ItemText.width + ( 2 * valueXMargin ), ItemText.height + ( 2 * valueYMargin ), CORNER_RADIUS, CORNER_RADIUS, { fill: 'white', stroke: 'black', lineWidth:1 } );
+    var ItemRectangle = new Rectangle( 0, 0, ItemText.width + ( 2 * valueXMargin ) + 20, ItemText.height + ( 2 * valueYMargin ), CORNER_RADIUS, CORNER_RADIUS, { fill: 'white', stroke: 'black', lineWidth:1 } );
      
      ItemRectangle.left=ItemLabel.right + 10;
      ItemRectangle.centerY =ItemLabel.centerY;
