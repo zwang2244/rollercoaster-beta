@@ -237,7 +237,10 @@ define( function( require ) {
         }
 
         track.bumpAboveGround();
-        track.bumpAsideWindow();
+        //Zhilin addded
+        track.bumpAsideLeftWindow();
+        track.bumpAsideRightWindow();
+
         track.dragging = false;
         track.dropped = true;
 

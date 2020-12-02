@@ -1105,7 +1105,7 @@ define( function( require ) {
 
         // Make sure the new track doesn't go underground after a control point is deleted, see #174
         newTrack.bumpAboveGround();
-        newTrack.bumpAsideWindow();
+
         this.tracks.add( newTrack );
       }
 
@@ -1226,7 +1226,6 @@ define( function( require ) {
       // When tracks are joined, bump the new track above ground so the y value (and potential energy) cannot go negative,
       // and so it won't make the "return skater" button get bigger, see #158
       newTrack.bumpAboveGround();
-      newTrack.bumpAsideWindow();
       this.tracks.add( newTrack );
 
       // Move skater to new track if he was on the old track, by searching for the best fit point on the new track
