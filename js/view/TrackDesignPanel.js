@@ -118,14 +118,14 @@ define( function( require ) {
 				tracks = model.getAllTracks();
 //				valueText.text = valueText.text + tracks[trackLength-1].trackName;
 			}
-			else if(model.joinTracks2(track))  // find the closest point if snapTarget exists but point shifted while merging some other track
-			{
-				merges++;
-				trackLength--;
-				i = 0;
-				tracks = model.getAllTracks();
-//				valueText.text = valueText.text + tracks[trackLength-1].trackName;
-			}
+// 			else if(model.joinTracks2(track))  // find the closest point if snapTarget exists but point shifted while merging some other track
+// 			{
+// 				merges++;
+// 				trackLength--;
+// 				i = 0;
+// 				tracks = model.getAllTracks();
+// //				valueText.text = valueText.text + tracks[trackLength-1].trackName;
+// 			}
 			else //move on if snapping does not work
 			{
 				i++;
@@ -166,7 +166,7 @@ define( function( require ) {
 	if(model.getAllTracks().length !==1 ) //make sure there is only one track
 	{
 
-		valueText.text = "Error ! Tracks must be kept closer to merge properly !" + model.getAllTracks().length.toFixed(0);
+		valueText.text = "Error ! Tracks must not be overlapped and must be kept closer to merge properly !" + model.getAllTracks().length.toFixed(0);
 	        valueText.centerX = View.layoutBounds.centerX;
 	        
 		model.tracks.clear();
@@ -227,9 +227,19 @@ define( function( require ) {
 		var tkNo = (track[1].trackName) == "Flat" ? 0:1;
 		var rCP = track[0].getRightControlPoint();
 		rCP.snapTarget = model.flatTrack.controlPoints[0];
-		if(model.joinTracks(track[0]))
-		{
-		}
+		// if(model.joinTracks(track[0]))
+		// {
+    //   //Zhilin
+    //   // valueText.text = "Error ! No overlap ";
+    //   // valueText.centerX = View.layoutBounds.centerX;
+    //   // return false;
+    //   console.log("1");
+		// }else{
+    //   // valueText.text = "Error ! No overlap ";
+    //   // valueText.centerX = View.layoutBounds.centerX;
+    //   // return false;
+    //   console.log("2");
+    // }
 		track  = model.getAllTracks();
 		rCP = track[0].getRightControlPoint().sourcePosition;
 		wallImgNodeH.bottom = View.modelViewTransform.modelToViewY(rCP.y)+6;
@@ -409,7 +419,6 @@ define( function( require ) {
     mergeTracksButton.left = adjHeightsButton.right + 10;
     mergeTracksButton.top = adjHeightsButton.top;
 
-    //Zhilin
     resetButtonNode.right =  View.layoutBounds.right + 75;
     resetButtonNode.top =  View.interfaceHeight + 10;
     checkBoxes.right = View.layoutBounds.right - 10;

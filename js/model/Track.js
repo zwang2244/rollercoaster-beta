@@ -828,6 +828,17 @@ define( function( require ) {
         var proposedPosition = delta.plusXY( originalX, originalY );
 
         // Only search within the visible model bounds, see #195
+        //Zhilin 
+        /** 
+        if(availableModelBounds == null){
+          return false;
+        }
+        */
+       //Zhilin
+      //  if(proposedPosition == null){
+      //    console.log("1");
+      //    return false;
+      //  }
         var containsPoint = availableModelBounds.containsPoint( proposedPosition );
         if ( containsPoint ) {
           this.controlPoints[i].sourcePosition = proposedPosition;
