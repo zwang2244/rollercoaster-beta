@@ -409,7 +409,8 @@ define( function( require ) {
     mergeTracksButton.left = adjHeightsButton.right + 10;
     mergeTracksButton.top = adjHeightsButton.top;
 
-    resetButtonNode.right =  View.layoutBounds.right + 100;
+    //Zhilin
+    resetButtonNode.right =  View.layoutBounds.right + 75;
     resetButtonNode.top =  View.interfaceHeight + 10;
     checkBoxes.right = View.layoutBounds.right - 10;
     checkBoxes.top = View.layoutBounds.top + 5;

@@ -744,8 +744,8 @@ define( function( require ) {
 
     bumpAsideLeftWindow: function() {
       var lowestX = this.getLowestX();
-      if ( lowestX < -9.5 ) {
-        this.translate(-9.5-lowestX, 0 );
+      if ( lowestX < -8 ) {
+        this.translate(-8-lowestX, 0 );
       }
     },
 
@@ -789,8 +789,8 @@ define( function( require ) {
     //ensure the track won't get beyond the right limit
     bumpAsideRightWindow: function() {
       var highestX = this.getHighestX();
-      if ( highestX > 10 ) {
-        this.translate( -2, 0 );
+      if ( highestX > 8.5 ) {
+        this.translate( -1.5, 0 );
       }
     },
 
