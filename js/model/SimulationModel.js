@@ -1139,25 +1139,60 @@ define( function( require ) {
     var controlPoint = [track.controlPoints[0], track.controlPoints[track.controlPoints.length - 1]];
     var bestOtherPoint = controlPoint[0];
 
+    //console.log(str(track.controlPoints[0]));
+    //console.log(str(track.controlPoints[track.controlPoints.length - 1]));
+
+    console.log("snapPoint");
+    //Zhilin rewrites
     for(var k=0; k < 2 ; k++ ) //2 controlPoints for given track
     {
-	    for(var i=0; i < tracks.length; i++) 
-	    {
-	    	t=tracks[i];
-		if(t.trackName !== track.trackName)
-		{
-		      var myPoints = [t.controlPoints[0], t.controlPoints[t.controlPoints.length - 1]];
-		      for(var j=0; j<2; j++) // 2 control points for each track
-		      {
-			distance = myPoints[j].position.distance(controlPoint[k].position);
-			if(bestDistance==null) { bestDistance = distance; bestPoint = myPoints[j];}
-			bestPoint = (distance < bestDistance) ? myPoints[j] : bestPoint;
-			bestDistance = (distance < bestDistance) ? distance : bestDistance;
-			bestOtherPoint = (distance < bestDistance) ? controlPoint[k] : bestOtherPoint;
-		      }
-		}
-	      }
+      if(k = 0){ // the beginning of the track
+        for(var i = 0; i < tracks.length; i++){ // only snap with the end of some other tracks
+            t = tracks[i];
+            var myPoints = [t.controlPoints[0], t.controlPoints[t.controlPoints.length - 1]];
+            if(t.trackName !== track.trackName && t.controlPoints[t.controlPoints.length - 1].positionX <= controlPoint[k].positionX){
+
+                distance = myPoints[1].position.distance(controlPoint[k].position);
+                if(bestDistance==null) { bestDistance = distance; bestPoint = myPoints[1];}
+                bestPoint = (distance < bestDistance) ? myPoints[1] : bestPoint;
+                bestDistance = (distance < bestDistance) ? distance : bestDistance;
+                bestOtherPoint = (distance < bestDistance) ? controlPoint[k] : bestOtherPoint;
+            }
+        }
+      }else if(k = 1){//the end of the track
+        for(var i = 0; i < tracks.length; i++){ // only snap with the beginning of some other tracks
+          t = tracks[i];
+          var myPoints = [t.controlPoints[0], t.controlPoints[t.controlPoints.length - 1]];
+          if(t.trackName !== track.trackName && t.controlPoints[0].positionX >= controlPoint[k].positionX){
+            distance = myPoints[0].position.distance(controlPoint[k].position);
+            if(bestDistance==null) { bestDistance = distance; bestPoint = myPoints[0];}
+            bestPoint = (distance < bestDistance) ? myPoints[0] : bestPoint;
+            bestDistance = (distance < bestDistance) ? distance : bestDistance;
+            bestOtherPoint = (distance < bestDistance) ? controlPoint[k] : bestOtherPoint;
+          }
+        }
+      }
+	  //   for(var i=0; i < tracks.length; i++) 
+	  //   {
+      
+	  //   	t=tracks[i];
+		// if(t.trackName !== track.trackName)
+		// {
+		//       var myPoints = [t.controlPoints[0], t.controlPoints[t.controlPoints.length - 1]];
+		//       for(var j=0; j<2; j++) // 2 control points for each track
+		//       {
+		// 	distance = myPoints[j].position.distance(controlPoint[k].position);
+		// 	if(bestDistance==null) { bestDistance = distance; bestPoint = myPoints[j];}
+		// 	bestPoint = (distance < bestDistance) ? myPoints[j] : bestPoint;
+		// 	bestDistance = (distance < bestDistance) ? distance : bestDistance;
+		// 	bestOtherPoint = (distance < bestDistance) ? controlPoint[k] : bestOtherPoint;
+		//       }
+		// }
+	  //     }
      }
+
+
+
 //     return bestDistance;
       if (bestDistance < MIN_DIST) {
 //	bestOtherPoint.snapTarget = bestPoint;
@@ -1182,6 +1217,13 @@ define( function( require ) {
       var otherTrack;
       for ( var i = 0; i < physicalTracks.length; i++ ) {
          otherTrack = physicalTracks[i];
+         //Zhilin: see containsControlPoint//return true if two control points are the same
+         //Zhilin: otherTrack is NULL?
+
+        //  if(otherTrack == null){
+        //    return false;
+        //  }
+
         if ( otherTrack.containsControlPoint( connectedPoint ) ) {
           this.joinTrackToTrack( track, otherTrack );
           flag=1;
@@ -1202,6 +1244,7 @@ define( function( require ) {
     },
 
     // Merge the track very close to the given track, but not snapped due to controlPoint Error
+    //Zhilin: the method need to be noticed
     joinTracks2: function( track ) {
     var flag=0;
       var connectedPoint = track.getSnapTarget();
@@ -1345,24 +1388,29 @@ define( function( require ) {
       if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[0] ) {
         firstTrackForward();
         secondTrackForward();
+        console.log("1.Forward Forward");
+        
       }
 
       // Forward Backward
       else if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[b.controlPoints.length - 1] ) {
         firstTrackForward();
         secondTrackBackward();
+        console.log("2.Forward Backward");
       }
 
       // Backward Forward
       else if ( a.controlPoints[0].snapTarget === b.controlPoints[0] ) {
         firstTrackBackward();
         secondTrackForward();
+        console.log("3.Backward Forward");
       }
 
       // Backward backward
       else if ( a.controlPoints[0].snapTarget === b.controlPoints[b.controlPoints.length - 1] ) {
         firstTrackBackward();
         secondTrackBackward();
+        console.log("4.Backward backward");
       }
       this.mergedTrackCount = this.mergedTrackCount + 1;
       var trackName = "Track" + this.mergedTrackCount.toString();
