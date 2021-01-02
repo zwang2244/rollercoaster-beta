@@ -1167,6 +1167,7 @@ snapControlPoint: function( track ) {
       var otherTrack;
       for ( var i = 0; i < physicalTracks.length; i++ ) {
         otherTrack = physicalTracks[i];
+         // *** TODO: @vishesh - contrains control point should check for order here - and not connect starting points or ending points *** //
         if ( otherTrack.containsControlPoint( connectedPoint ) ) {
           this.joinTrackToTrack( track, otherTrack );
           flag=1;
