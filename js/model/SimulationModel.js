@@ -1166,19 +1166,19 @@ snapControlPoint: function( track ) {
       var physicalTracks = this.getPhysicalTracks();
       var otherTrack;
       for ( var i = 0; i < physicalTracks.length; i++ ) {
-       otherTrack = physicalTracks[i];
-       if ( otherTrack.containsControlPoint( connectedPoint ) ) {
-        this.joinTrackToTrack( track, otherTrack );
-        flag=1;
-        break;
+        otherTrack = physicalTracks[i];
+        if ( otherTrack.containsControlPoint( connectedPoint ) ) {
+          this.joinTrackToTrack( track, otherTrack );
+          flag=1;
+          break;
+        }
       }
-    }
-    if(flag==1) {
-     return true;
-   }
-   else {
-     return false;
-   }	
+      if (flag == 1) {
+        return true;
+      }
+      else {
+        return false;
+      }	
 
       // if the number of control points is low enough, replenish the toolbox
 /*      if ( this.getNumberOfControlPoints() <= MAX_NUMBER_CONTROL_POINTS - 3 ) {
@@ -1312,18 +1312,18 @@ snapControlPoint: function( track ) {
       	points.push( a.controlPoints[0].copyWithSnap() );
       	for ( i = 1; i < a.controlPoints.length; i++ ) { points.push( a.controlPoints[i].copy() ); }
       };
-    var firstTrackBackward = function() {
-     points.push( a.controlPoints[a.controlPoints.length - 1].copyWithSnap() );
-     for ( i = a.controlPoints.length - 2; i >= 0; i-- ) { points.push( a.controlPoints[i].copy() ); }
-   };
- var secondTrackForward = function() {
-   for ( i = 1; i < b.controlPoints.length-1; i++ ) {points.push( b.controlPoints[i].copy() ); }
-     points.push( b.controlPoints[i].copyWithSnap() );
- };
- var secondTrackBackward = function() {
-   for ( i = b.controlPoints.length - 2; i >= 1; i-- ) {points.push( b.controlPoints[i].copy() ); }
-     points.push( b.controlPoints[i].copyWithSnap() );
- };
+      var firstTrackBackward = function() {
+        points.push( a.controlPoints[a.controlPoints.length - 1].copyWithSnap() );
+        for ( i = a.controlPoints.length - 2; i >= 0; i-- ) { points.push( a.controlPoints[i].copy() ); }
+      };
+      var secondTrackForward = function() {
+        for ( i = 1; i < b.controlPoints.length-1; i++ ) {points.push( b.controlPoints[i].copy() ); }
+        points.push( b.controlPoints[i].copyWithSnap() );
+      };
+      var secondTrackBackward = function() {
+        for ( i = b.controlPoints.length - 2; i >= 1; i-- ) {points.push( b.controlPoints[i].copy() ); }
+        points.push( b.controlPoints[i].copyWithSnap() );
+      };
 
       // Only include one copy of the snapped point
       // Forward Forward
@@ -1349,6 +1349,7 @@ snapControlPoint: function( track ) {
         firstTrackBackward();
         secondTrackBackward();
       }
+
       this.mergedTrackCount = this.mergedTrackCount + 1;
       var trackName = "Track" + this.mergedTrackCount.toString();
       var newTrack = new Track( this, 
@@ -1357,8 +1358,8 @@ snapControlPoint: function( track ) {
       	true, 
       	a.getParentsOrSelf().concat( b.getParentsOrSelf() ), 
       	this.availableModelBoundsProperty,
-      	{trackName: trackName } 
-        );
+      	{ trackName: trackName } 
+      );
 
       newTrack.physical = true;
       newTrack.dropped = true;
@@ -1379,7 +1380,7 @@ snapControlPoint: function( track ) {
 
       // Move skater to new track if he was on the old track, by searching for the best fit point on the new track
       // Note: Energy is not conserved when tracks joined since the user has added or removed energy from the system
-/*
+      /*
       if ( this.skater.track === a || this.skater.track === b ) {
 
         var originalDirectionVector = this.skater.track.getUnitParallelVector( this.skater.u ).times( this.skater.uD );
@@ -1417,6 +1418,8 @@ snapControlPoint: function( track ) {
       // When joining tracks, smooth out the new track, but without moving the point that joined the tracks, see #177 #238
       newTrack.smoothPointOfHighestCurvature( [] );
     },
+    
+
     // When a track is dragged, update the skater's energy (if the sim was paused), since it wouldn't be handled in the
     // update loop.
     trackModified: function( track ) {
