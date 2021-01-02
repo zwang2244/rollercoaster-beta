@@ -1097,30 +1097,29 @@ position = new Vector2(position.x+0.2, position.y);
       return allTracks;
     },
 
-    getPhysicalTracks: function() {
-      var physicalTracks = [];
-      for ( var i = 0; i < this.tracks.length; i++ ) {
-        var track = this.tracks.get( i );
-        if ( track.physical ) {
-          physicalTracks.push( track );
-        }
-      }
-      return physicalTracks;
-    },
+getPhysicalTracks: function() {
+  var physicalTracks = [];
+  for ( var i = 0; i < this.tracks.length; i++ ) {
+    var track = this.tracks.get( i );
+    if ( track.physical ) {
+      physicalTracks.push( track );
+    }
+  }
+  return physicalTracks;
+},
 
-    getNonPhysicalTracks: function() {
+getNonPhysicalTracks: function() {
+  // Use vanilla instead of lodash for speed since this is in an inner loop
+  var nonphysicalTracks = [];
+  for ( var i = 0; i < this.tracks.length; i++ ) {
+    var track = this.tracks.get( i );
+    if ( !track.physical ) {
+      nonphysicalTracks.push( track );
+    }
+  }
+  return nonphysicalTracks;
+},
 
-      // Use vanilla instead of lodash for speed since this is in an inner loop
-      var nonphysicalTracks = [];
-      for ( var i = 0; i < this.tracks.length; i++ ) {
-        var track = this.tracks.get( i );
-
-        if ( !track.physical ) {
-          nonphysicalTracks.push( track );
-        }
-      }
-      return nonphysicalTracks;
-    },
 snapControlPoint: function( track ) {
   var tracks = this.getAllTracks();
   var bestDistance = null;
