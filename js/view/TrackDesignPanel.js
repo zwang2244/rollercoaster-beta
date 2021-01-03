@@ -3,8 +3,8 @@
  *
  */
 
-define( function( require ) {
-  'use strict';
+ define( function( require ) {
+   'use strict';
 
   // modules
   var inherit = require( 'PHET_CORE/inherit' );
@@ -45,100 +45,92 @@ define( function( require ) {
    * @param {SimulationModel} model
    * @constructor
    */
-  function TrackDesignPanel( model, View, options ) {
+   function TrackDesignPanel( model, View, options ) {
 
-    options = _.extend( {
-      xMargin: 15,
-      yMargin: 10,
-      stroke: 'black',
-      lineWidth: 2,
-    }, options );
+     options = _.extend( {
+       xMargin: 15,
+       yMargin: 10,
+       stroke: 'black',
+       lineWidth: 2,
+     }, options );
 
-    Node.call( this );
-    var buttons = this;
+     Node.call( this );
+     var buttons = this;
 
 //Dummy text
-    var valueText = new Text( "",new PhetFont(14) );
-    View.addChild(valueText);
-    valueText.centerX = View.layoutBounds.centerX;
-    valueText.top = 50;
+var valueText = new Text( "",new PhetFont(14) );
+View.addChild(valueText);
+valueText.centerX = View.layoutBounds.centerX;
+valueText.top = 50;
 
 //Wall
-    var wallImgNodeH = new Image ( WallImage ); 
-    var wallImgNodeV = new Image ( WallImage );
-    wallImgNodeH.scale(0.35);
-    wallImgNodeV.scale(0.4);
-    wallImgNodeH.rotate(Math.PI/2);
-    View.addChild(wallImgNodeH);
-    View.addChild(wallImgNodeV);
+var wallImgNodeH = new Image ( WallImage ); 
+var wallImgNodeV = new Image ( WallImage );
+wallImgNodeH.scale(0.35);
+wallImgNodeV.scale(0.4);
+wallImgNodeH.rotate(Math.PI/2);
+View.addChild(wallImgNodeH);
+View.addChild(wallImgNodeV);
 
 //Flag
-    var flagImgNode = new Image ( flagImage ); 
-    View.addChild(flagImgNode);
-    flagImgNode.scale(0.20);
+var flagImgNode = new Image ( flagImage ); 
+View.addChild(flagImgNode);
+flagImgNode.scale(0.20);
 
-    var speedFlagImgNode = new Image ( flagImage2 ); 
-    View.addChild(speedFlagImgNode);
-    speedFlagImgNode.scale(0.20);
+var speedFlagImgNode = new Image ( flagImage2 ); 
+View.addChild(speedFlagImgNode);
+speedFlagImgNode.scale(0.20);
 
 
 //Function to merge the tracks
-    var mergeTracks = function() {
-        var unmerged_tracks = model.getAllTracks() ;
-	var tracks = model.getAllTracks();
+var mergeTracks = function() {
+  var unmerged_tracks = model.getAllTracks() ;
+  var tracks = model.getAllTracks();
 	//store the unmerged tracks
-//	model.previousTracks = tracks;
-	model.tracks.forEach( function(track) {
-	    model.previousTracks.add(track);
-         } );
-	
-	var trackLength = tracks.length;
-	var maxMerges = tracks.length - 1;
-	var merges = 0, i = 0;
-	var track,t, myPoints;
-	valueText.text = "";
-	if(trackLength==0)
-	{
-		valueText.text = "Error ! No Track to simulate, add atleast one track ! ";
-	        valueText.centerX = View.layoutBounds.centerX;
-		return false;
-	}
+  //model.previousTracks = tracks;
+  model.tracks.forEach( function(track) {
+    model.previousTracks.add(track);
+  } );
+
+  var trackLength = tracks.length;
+  var maxMerges = tracks.length - 1;
+  var merges = 0, i = 0;
+  var track,t, myPoints;
+  valueText.text = "";
+  if(trackLength==0) {
+    valueText.text = "Error ! No Track to simulate, add atleast one track ! ";
+    valueText.centerX = View.layoutBounds.centerX;
+    return false;
+  }
 	// if snapTarget is intact
-	while( (i < trackLength ) && ( merges < maxMerges) )
-	{
+	while( (i < trackLength ) && ( merges < maxMerges) ) {
 		track = tracks[i];
 		myPoints = [track.controlPoints[0], track.controlPoints[track.controlPoints.length - 1]];
-		if ( myPoints[0].snapTarget || myPoints[1].snapTarget ) 
-		{
-			if(model.joinTracks(track)) //if snapTarget is intact
-			{
+		if ( myPoints[0].snapTarget || myPoints[1].snapTarget ) {
+			if(model.joinTracks(track)) { //if snapTarget is intact
 				merges++;
 				trackLength--;
 				i = 0;
 				tracks = model.getAllTracks();
-//				valueText.text = valueText.text + tracks[trackLength-1].trackName;
-			}
-			else if(model.joinTracks2(track))  // find the closest point if snapTarget exists but point shifted while merging some other track
-			{
+        //valueText.text = valueText.text + tracks[trackLength-1].trackName;
+      }
+			else if(model.joinTracks2(track)) { // find the closest point if snapTarget exists but point shifted while merging some other track
 				merges++;
 				trackLength--;
 				i = 0;
 				tracks = model.getAllTracks();
-//				valueText.text = valueText.text + tracks[trackLength-1].trackName;
-			}
-			else //move on if snapping does not work
-			{
+        //valueText.text = valueText.text + tracks[trackLength-1].trackName;
+      }
+			else { //move on if snapping does not work
 				i++;
 			}
 		}
-		else 
-		{
+		else {
 			i++;
 		}
 	}
 
-//	valueText.text = valueText.text + "X";
-
+  // valueText.text = valueText.text + "X";
 	// unsnapped points
 	i=0;
 	tracks = model.getAllTracks();
@@ -154,11 +146,11 @@ define( function( require ) {
 			i = 0;
 			tracks = model.getAllTracks();
 //			valueText.text = valueText.text + tracks[trackLength-1].trackName;
-			continue;
-		}
-		i++;
-  }
- 
+continue;
+}
+i++;
+}
+
 
 
 
@@ -167,16 +159,16 @@ define( function( require ) {
 	{
 
 		valueText.text = "Error ! Tracks must be kept closer to merge properly !" + model.getAllTracks().length.toFixed(0);
-	        valueText.centerX = View.layoutBounds.centerX;
-	        
-		model.tracks.clear();
-		model.previousTracks.forEach( function(track)
-		{
-			track.interactive=true;
-			model.tracks.add(track);
-		} );
-		model.previousTracks.clear();
-		model.mergedTrackCount = 0;
+    valueText.centerX = View.layoutBounds.centerX;
+
+    model.tracks.clear();
+    model.previousTracks.forEach( function(track)
+    {
+      track.interactive=true;
+      model.tracks.add(track);
+    } );
+    model.previousTracks.clear();
+    model.mergedTrackCount = 0;
   /*
       for(var i=0;i<unmerged_tracks.length;i++)
       {
@@ -184,7 +176,7 @@ define( function( require ) {
         track.interactive=true;
         model.tracks.add(track);
       }
-  */
+      */
 
       //Zhilin
     // var n =0;
@@ -203,10 +195,10 @@ define( function( require ) {
     // }
 
 
-		return false;
-	}
-	else
-	{
+    return false;
+  }
+  else
+  {
 		//add flat portion of the track
 		var track  = model.getAllTracks();
 		var right = track[0].getRightControlPointXY();
@@ -239,12 +231,12 @@ define( function( require ) {
 		wallImgNodeV.bottom = wallImgNodeH.bottom;
 		return true;
 	}
-    };
+};
    // Mass Slider
-    var massSlider = new ControlSlider (
-    	  "Car Mass",
-    	 'kg',
-    	 model.skater.massProperty,
+   var massSlider = new ControlSlider (
+     "Car Mass",
+     'kg',
+     model.skater.massProperty,
     	 new Range(Constants.MIN_MASS,Constants.MAX_MASS), //range
     	 function(val){return val;},
     	 new Property(true),
@@ -252,119 +244,119 @@ define( function( require ) {
    massSlider.scale(0.550);
 
    //Friction SLIDER
-    var frictionSlider = new ControlSlider (
-    	  "Friction",
-    	 '',
-    	 model.frictionProperty,
+   var frictionSlider = new ControlSlider (
+     "Friction",
+     '',
+     model.frictionProperty,
     	 new Range(0,0.1), //friction range
     	 function(val){return val;},
     	 new Property(true),
     	 {delX:0.01, decimals:2} );
    frictionSlider.scale(0.550);
 
-    var children = [massSlider,frictionSlider];
-    var panelContent = new HBox( { spacing: 15, children: children } );
-    var massFrictionPanel = new Panel(panelContent,{fill:'#F0F0F0',xMargin:10});  
-    View.addChild(massFrictionPanel);
-	
+   var children = [massSlider,frictionSlider];
+   var panelContent = new HBox( { spacing: 15, children: children } );
+   var massFrictionPanel = new Panel(panelContent,{fill:'#F0F0F0',xMargin:10});  
+   View.addChild(massFrictionPanel);
+
   //Adjust heights button 
-    var adjHeightsButton = new TextPushButton (  'Adjust Height', {
-      baseColor: 'rgb(50,50,180)',
-      font: new PhetFont( 12 ),
-      textFill: 'white',
-      xMargin: 10,
-      listener: function() {
-      	   model.trackDesignStateProperty.set('height');
-      },
-    } );
+  var adjHeightsButton = new TextPushButton (  'Adjust Height', {
+    baseColor: 'rgb(50,50,180)',
+    font: new PhetFont( 12 ),
+    textFill: 'white',
+    xMargin: 10,
+    listener: function() {
+      model.trackDesignStateProperty.set('height');
+    },
+  } );
 
-    var adjWidthButton = new TextPushButton (  'Adjust Width', {
-      baseColor: 'rgb(50,50,180)',
-      font: new PhetFont( 12 ),
-      textFill: 'white',
-      xMargin: 10,
-      listener: function() {
-      	   model.trackDesignStateProperty.set('width');
-      },
-    } );
+  var adjWidthButton = new TextPushButton (  'Adjust Width', {
+    baseColor: 'rgb(50,50,180)',
+    font: new PhetFont( 12 ),
+    textFill: 'white',
+    xMargin: 10,
+    listener: function() {
+      model.trackDesignStateProperty.set('width');
+    },
+  } );
 
-    var adjFrictionButton = new TextPushButton (  'Adjust Friction', {
-      baseColor: 'rgb(50,50,180)',
-      font: new PhetFont( 12 ),
-      textFill: 'white',
-      xMargin: 10,
-      listener: function() {
-      	   model.trackDesignStateProperty.set('friction');
-      },
-    } );
+  var adjFrictionButton = new TextPushButton (  'Adjust Friction', {
+    baseColor: 'rgb(50,50,180)',
+    font: new PhetFont( 12 ),
+    textFill: 'white',
+    xMargin: 10,
+    listener: function() {
+      model.trackDesignStateProperty.set('friction');
+    },
+  } );
 
-    var doneButton = new TextPushButton (  'Done', {
-      baseColor: 'rgb(50,50,180)',
-      font: new PhetFont( 14 ),
-      textFill: 'white',
-      xMargin: 10,
-      listener: function() {
-      	   model.trackDesignStateProperty.set('addTrack');
-      },
-    } );
+  var doneButton = new TextPushButton (  'Done', {
+    baseColor: 'rgb(50,50,180)',
+    font: new PhetFont( 14 ),
+    textFill: 'white',
+    xMargin: 10,
+    listener: function() {
+      model.trackDesignStateProperty.set('addTrack');
+    },
+  } );
 
 // JOIN TRACKS AND SIMULATE BUTTON            
-    var mergeTracksButton = new TextPushButton (  'Join Tracks & Simulate', {
-      baseColor: 'rgb(50,50,180)',
-      font: new PhetFont( 12 ),
-      textFill: 'white',
-      xMargin: 10,
-      listener: function() {
+var mergeTracksButton = new TextPushButton (  'Join Tracks & Simulate', {
+  baseColor: 'rgb(50,50,180)',
+  font: new PhetFont( 12 ),
+  textFill: 'white',
+  xMargin: 10,
+  listener: function() {
 
-      	   model.trackDesignStateProperty.set('merge');
-      	   if(mergeTracks())
-      	   {
-      	   	model.simStateProperty.set('simulation');
-      	   }
-      	   else
-      	   {
-      	   	model.simStateProperty.set('design');
-	        model.trackDesignStateProperty.set('addTrack');
-      	   }
-      },
-    } );
+    model.trackDesignStateProperty.set('merge');
+    if(mergeTracks())
+    {
+      model.simStateProperty.set('simulation');
+    }
+    else
+    {
+      model.simStateProperty.set('design');
+      model.trackDesignStateProperty.set('addTrack');
+    }
+  },
+} );
 
 // ERASER BUTTON
-    var eraserButton = new EraserButton (  {
-      iconWidth : 24,
-      listener: function() {
-      	   model.trackDesignStateProperty.set('deleteTrack');
-      },
-    } );
- 
-    var eraserText = new Text('Delete Track', {font:new PhetFont({ fill: 'black', size: 11}) } );
-    eraserText.centerX = eraserButton.centerX;
-    eraserText.top = eraserButton.bottom + 5;    
-    var eraserButtonNode = new Node( {children:[eraserText,eraserButton]} ); 
+var eraserButton = new EraserButton (  {
+  iconWidth : 24,
+  listener: function() {
+    model.trackDesignStateProperty.set('deleteTrack');
+  },
+} );
+
+var eraserText = new Text('Delete Track', {font:new PhetFont({ fill: 'black', size: 11}) } );
+eraserText.centerX = eraserButton.centerX;
+eraserText.top = eraserButton.bottom + 5;    
+var eraserButtonNode = new Node( {children:[eraserText,eraserButton]} ); 
 
 
 // RESET All button     	
 
-       var resetAllButton = new ResetAllButton( { listener: function() {
+var resetAllButton = new ResetAllButton( { listener: function() {
 	model.returnSkaterStart();	  
 	model.reset();
-	}
-       } );
+}
+} );
 
-      var resetText=new Text('Reset', {font:new PhetFont({ fill: 'black', size: 10}) } );
-      var resetButtonNode = new Node( {children:[resetText,resetAllButton]} ); 
+var resetText=new Text('Reset', {font:new PhetFont({ fill: 'black', size: 10}) } );
+var resetButtonNode = new Node( {children:[resetText,resetAllButton]} ); 
 
-      resetAllButton.scale(0.80);
-      resetText.centerX=resetAllButton.centerX;
-      resetText.top=resetAllButton.bottom+3;
+resetAllButton.scale(0.80);
+resetText.centerX=resetAllButton.centerX;
+resetText.top=resetAllButton.bottom+3;
 
 //Checkbox
-    var textOptions = {font: new PhetFont( 12 )};
-    var gridSet = {label: new Text( 'Grid', textOptions )};
-    var forceVectorsSet = {label: new Text( 'Force Vectors', textOptions )};
-    var speedFlagSet = {label: new Text( 'Max Speed', textOptions )};
-    var accFlagSet = {label: new Text( 'Max Acceleration', textOptions )};
-    var options = {boxWidth: 18};
+var textOptions = {font: new PhetFont( 12 )};
+var gridSet = {label: new Text( 'Grid', textOptions )};
+var forceVectorsSet = {label: new Text( 'Force Vectors', textOptions )};
+var speedFlagSet = {label: new Text( 'Max Speed', textOptions )};
+var accFlagSet = {label: new Text( 'Max Acceleration', textOptions )};
+var options = {boxWidth: 18};
     // In the absence of any sun (or other) layout packages, just manually space them out so they will have the icons aligned
 
     var pad = function( itemSet ) {
@@ -378,24 +370,24 @@ define( function( require ) {
     var accChkBox = new CheckBox( new HBox( {children: pad(accFlagSet)} ), model.accFlagVisibleProperty , options );
 
     var checkBoxChildren = [
-	gridChkBox,
-	vectorsChkBox,
-	speedChkBox,
-	accChkBox
-        ];
+    gridChkBox,
+    vectorsChkBox,
+    speedChkBox,
+    accChkBox
+    ];
     var checkBoxes = new VBox( {align: 'left', spacing: 4, children: checkBoxChildren} );
     View.addChild(checkBoxes);
 
 //Positioning of Buttons & Checkboxes
 
-    buttons.addChild(adjHeightsButton);
+buttons.addChild(adjHeightsButton);
 //    buttons.addChild(adjFrictionButton);
-    buttons.addChild(adjWidthButton);
-    buttons.addChild(mergeTracksButton);
+buttons.addChild(adjWidthButton);
+buttons.addChild(mergeTracksButton);
 
-    View.addChild(doneButton);
-    View.addChild(eraserButtonNode);
-    View.addChild(resetButtonNode);
+View.addChild(doneButton);
+View.addChild(eraserButtonNode);
+View.addChild(resetButtonNode);
 /*
     adjFrictionButton.centerX = adjHeightsButton.centerX;
     adjFrictionButton.top = adjHeightsButton.bottom + 10;
@@ -403,7 +395,7 @@ define( function( require ) {
     mergeTracksButton.top = adjFrictionButton.bottom + 10;
     adjFrictionButton.left = adjHeightsButton.right + 10;
     adjFrictionButton.top = adjHeightsButton.top;
-*/
+    */
     adjHeightsButton.left =  adjWidthButton.right + 10;
     adjHeightsButton.top =  adjWidthButton.top;
     mergeTracksButton.left = adjHeightsButton.right + 10;
@@ -424,21 +416,21 @@ define( function( require ) {
 
 
 // Property links
-    model.trackDesignStateProperty.link( function(state) {
-    	adjHeightsButton.visible = (state == 'addTrack') ? true:false;
-    	adjWidthButton.visible = (state == 'addTrack') ? true:false;
-    	adjFrictionButton.visible = (state == 'addTrack') ? true:false;
-    	eraserButtonNode.visible = (state == 'addTrack') ? true:false;
-    	mergeTracksButton.visible = (state == 'addTrack') ? true:false;
-    	massFrictionPanel.visible = (state == 'addTrack') ? true:false;
-    	doneButton.visible = ((state !== 'addTrack')&&(state!=='merge')) ? true:false;
+model.trackDesignStateProperty.link( function(state) {
+  adjHeightsButton.visible = (state == 'addTrack') ? true:false;
+  adjWidthButton.visible = (state == 'addTrack') ? true:false;
+  adjFrictionButton.visible = (state == 'addTrack') ? true:false;
+  eraserButtonNode.visible = (state == 'addTrack') ? true:false;
+  mergeTracksButton.visible = (state == 'addTrack') ? true:false;
+  massFrictionPanel.visible = (state == 'addTrack') ? true:false;
+  doneButton.visible = ((state !== 'addTrack')&&(state!=='merge')) ? true:false;
 //    	resetButtonNode.visible = ((state=='addTrack')||(state=='merge')) ?true : false;
-    } );
+} );
 
 // Simulation Screen Buttons
 
-    var playProperty = model.property( 'paused' ).not();
-    var playPauseButton = new PlayPauseButton( playProperty ).mutate( {scale: 0.5} );
+var playProperty = model.property( 'paused' ).not();
+var playPauseButton = new PlayPauseButton( playProperty ).mutate( {scale: 0.5} );
 
     // Make the Play/Pause button bigger when it is showing the pause button, see #298
     var pauseSizeIncreaseFactor = 1.15;
@@ -449,11 +441,11 @@ define( function( require ) {
     var stepButton = new StepButton( function() { model.manualStep(); }, playProperty );
 
     var restartSkaterButton = new RefreshButton( { listener: function() { 
-	model.returnSkaterStart();
-	model.rollerState = 'start';
-	model.manualStep();
-	}
-    } );
+      model.returnSkaterStart();
+      model.rollerState = 'start';
+      model.manualStep();
+    }
+  } );
     restartSkaterButton.scale(0.8);
     var restartSkaterText = new Text('Restart Car', {font:new PhetFont({ fill: 'black', size: 9}) } );
 
@@ -465,37 +457,37 @@ define( function( require ) {
       	model.returnSkaterStart();
       },
     } );
-*/
-   var disconnectTracks =  function() {
-      	model.simStateProperty.set('design');
-      	model.rollerStateProperty.set('start');
-      	model.trackDesignStateProperty.set('addTrack');
-	model.skater.maxAProperty.reset();
-	model.skater.maxAPosProperty.reset();
+    */
+    var disconnectTracks =  function() {
+      model.simStateProperty.set('design');
+      model.rollerStateProperty.set('start');
+      model.trackDesignStateProperty.set('addTrack');
+      model.skater.maxAProperty.reset();
+      model.skater.maxAPosProperty.reset();
 //   	model.skater.reset();
-	model.tracks.clear();
-   	model.paused = true;
-   	model.mergedTrackCount = 0;
+model.tracks.clear();
+model.paused = true;
+model.mergedTrackCount = 0;
 
-	model.previousTracks.forEach( function(track)
-	{
-		track.interactive=true;
-		model.tracks.add(track);
-	} );
-	model.previousTracks.clear();
-   };
+model.previousTracks.forEach( function(track)
+{
+  track.interactive=true;
+  model.tracks.add(track);
+} );
+model.previousTracks.clear();
+};
 
-    var disconnectTracksButton = new TextPushButton ( 'Modify Design', {
-      baseColor: 'rgb(50,50,180)',
-	baseColor: '#f0c911',
-      font: new PhetFont( 12 ),
+var disconnectTracksButton = new TextPushButton ( 'Modify Design', {
+  baseColor: 'rgb(50,50,180)',
+  baseColor: '#f0c911',
+  font: new PhetFont( 12 ),
 //      textFill: 'white',
-      xMargin: 5,
-      listener: disconnectTracks,
-    } );
+xMargin: 5,
+listener: disconnectTracks,
+} );
 
-    var playbackSpeedControl = new PlaybackSpeedControl(model.speedProperty);
-    
+var playbackSpeedControl = new PlaybackSpeedControl(model.speedProperty);
+
     // Make the step button the same size as the pause button.
     stepButton.mutate( {scale: playPauseButton.height / stepButton.height} );
     model.property( 'paused' ).linkAttribute( stepButton, 'enabled' );
@@ -506,23 +498,23 @@ define( function( require ) {
     simControlNode.addChild( restartSkaterButton );
     simControlNode.addChild( restartSkaterText );
     View.addChild( disconnectTracksButton );
-     var simControlPanel = new Panel(simControlNode,{xMargin: 10, yMargin: 5, fill: '#F0F0F0', lineWidth: 1});
-     View.addChild(simControlPanel);
+    var simControlPanel = new Panel(simControlNode,{xMargin: 10, yMargin: 5, fill: '#F0F0F0', lineWidth: 1});
+    View.addChild(simControlPanel);
 
     //positioning
 //    restartSkaterButton.left = stepButton.right + 10;
-    restartSkaterText.centerX = restartSkaterButton.centerX;
-    restartSkaterText.top = restartSkaterButton.bottom + 5;    
-    playPauseButton.left = restartSkaterButton.right + 15;
-    playPauseButton.centerY = restartSkaterButton.centerY;
-    stepButton.left = playPauseButton.right + 15;
-    stepButton.centerY = playPauseButton.centerY;
-    playbackSpeedControl.left = stepButton.right+15;
-    playbackSpeedControl.centerY = stepButton.centerY;
-     simControlPanel.centerX = View.layoutBounds.centerX;
-     simControlPanel.top = View.layoutBounds.top + 5;
-    disconnectTracksButton.right = simControlPanel.left - 10;
-    disconnectTracksButton.centerY = simControlPanel.centerY;
+restartSkaterText.centerX = restartSkaterButton.centerX;
+restartSkaterText.top = restartSkaterButton.bottom + 5;    
+playPauseButton.left = restartSkaterButton.right + 15;
+playPauseButton.centerY = restartSkaterButton.centerY;
+stepButton.left = playPauseButton.right + 15;
+stepButton.centerY = playPauseButton.centerY;
+playbackSpeedControl.left = stepButton.right+15;
+playbackSpeedControl.centerY = stepButton.centerY;
+simControlPanel.centerX = View.layoutBounds.centerX;
+simControlPanel.top = View.layoutBounds.top + 5;
+disconnectTracksButton.right = simControlPanel.left - 10;
+disconnectTracksButton.centerY = simControlPanel.centerY;
 
 /*
     // Add the buttons directly to the view for easier positioning
@@ -531,35 +523,35 @@ define( function( require ) {
     View.addChild( restartSkaterButton.mutate( {left: stepButton.right + 10, centerY: playPauseButton.centerY} )  );
     View.addChild( disconnectTracksButton.mutate( {left: View.layoutBounds.left + 10, top: View.interfaceHeight + 15} )  );
     View.addChild( playbackSpeedControl.mutate( {right: playPauseButton.left - 25, centerY: playPauseButton.centerY} )  );
-*/
+    */
 
-   model.rollerStateProperty.link( function(state) {
-	flagImgNode.visible =  ((state=='end')&&(model.accFlagVisible==true))? true: false;
-	flagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxAPos.y); 
-	flagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxAPos.x);
-	speedFlagImgNode.visible =  ((state=='end')&&(model.speedFlagVisible==true))? true: false;
-	speedFlagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxUPos.y); 
-	speedFlagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxUPos.x);
+    model.rollerStateProperty.link( function(state) {
+      flagImgNode.visible =  ((state=='end')&&(model.accFlagVisible==true))? true: false;
+      flagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxAPos.y); 
+      flagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxAPos.x);
+      speedFlagImgNode.visible =  ((state=='end')&&(model.speedFlagVisible==true))? true: false;
+      speedFlagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxUPos.y); 
+      speedFlagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxUPos.x);
 
-   } );
-   model.accFlagVisibleProperty.link( function(state) {
-	flagImgNode.visible =  ((state==true)&&(model.rollerState=='end'))? true: false;
-	flagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxAPos.y); 
-	flagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxAPos.x);
-   } );
-   model.speedFlagVisibleProperty.link( function(state) {
-	speedFlagImgNode.visible =  ((state==true)&&(model.rollerState=='end'))? true: false;
-	speedFlagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxUPos.y); 
-	speedFlagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxUPos.x);
-   } );
+    } );
+    model.accFlagVisibleProperty.link( function(state) {
+      flagImgNode.visible =  ((state==true)&&(model.rollerState=='end'))? true: false;
+      flagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxAPos.y); 
+      flagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxAPos.x);
+    } );
+    model.speedFlagVisibleProperty.link( function(state) {
+      speedFlagImgNode.visible =  ((state==true)&&(model.rollerState=='end'))? true: false;
+      speedFlagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxUPos.y); 
+      speedFlagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxUPos.x);
+    } );
 
 
-   model.simStateProperty.link( function(state) {
-   	if(state=='simulation') { 
-   		model.pausedProperty.set(true); 
-   		model.returnSkaterStart(); 
-   		model.manualStep();
-   	}
+    model.simStateProperty.link( function(state) {
+      if(state=='simulation') { 
+        model.pausedProperty.set(true); 
+        model.returnSkaterStart(); 
+        model.manualStep();
+      }
 /*
 	playPauseButton.visible = (state==='simulation') ? true:false;
 	stepButton.visible = (state==='simulation') ? true:false;
@@ -571,14 +563,14 @@ define( function( require ) {
 	vectorsChkBox.visible = (state==='simulation') ? true:false;
 	speedChkBox.visible = (state==='simulation') ? true:false;
 	accChkBox.visible = (state==='simulation') ? true:false;
-    	wallImgNodeH.visible = (state==='simulation') ? true:false;
-    	wallImgNodeV.visible = (state==='simulation') ? true:false;
-		
-   } );
+  wallImgNodeH.visible = (state==='simulation') ? true:false;
+  wallImgNodeV.visible = (state==='simulation') ? true:false;
+
+} );
 
   } 
   return inherit( Node, TrackDesignPanel, {
 
-   } );
+  } );
 } );
 
