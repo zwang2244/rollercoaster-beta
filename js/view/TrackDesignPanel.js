@@ -103,7 +103,7 @@ var mergeTracks = function() {
     return false;
   }
 	// if snapTarget is intact
-	while( (i < trackLength ) && ( merges < maxMerges) ) {
+	while( (i < trackLength ) && ( merges < maxMerges ) ) {
 		track = tracks[i];
 		myPoints = [track.controlPoints[0], track.controlPoints[track.controlPoints.length - 1]];
 		if ( myPoints[0].snapTarget || myPoints[1].snapTarget ) {
@@ -135,29 +135,22 @@ var mergeTracks = function() {
 	i=0;
 	tracks = model.getAllTracks();
 	trackLength = tracks.length;
-	while((i < trackLength )&&(merges < maxMerges))
-	{
+	while((i < trackLength )&&(merges < maxMerges)) {
 		t = tracks[i];
-		if(model.snapControlPoint(t))
-		{
+		if(model.snapControlPoint(t)) {
 			model.joinTracks(t);
 			merges++;
 			trackLength--;
 			i = 0;
 			tracks = model.getAllTracks();
 //			valueText.text = valueText.text + tracks[trackLength-1].trackName;
-continue;
+      continue;
+    }
+  i++;
 }
-i++;
-}
-
-
-
 
 //	if(merges < maxMerges)
-	if(model.getAllTracks().length !==1 ) //make sure there is only one track
-	{
-
+	if(model.getAllTracks().length !==1 ) { //make sure there is only one track
 		valueText.text = "Error ! Tracks must be kept closer to merge properly !" + model.getAllTracks().length.toFixed(0);
     valueText.centerX = View.layoutBounds.centerX;
 

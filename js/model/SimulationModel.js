@@ -125,13 +125,13 @@ function SimulationModel() {
   ];
 
   bank = [
-  new ControlPoint( 6, 5 ),
-  new ControlPoint( 5, 4.90 ),
-  new ControlPoint( 3.9, 4.25 ),
-  new ControlPoint( 3, 2.5 ),
-  new ControlPoint( 2.1, 0.75 ),
-  new ControlPoint( 1, 0.10 ),
   new ControlPoint( 0, 0 ),
+  new ControlPoint( 1, 0.10 ),
+  new ControlPoint( 2.1, 0.75 ),
+  new ControlPoint( 3, 2.5 ),
+  new ControlPoint( 3.9, 4.25 ),
+  new ControlPoint( 5, 4.90 ),
+  new ControlPoint( 6, 5 ),
   ];
 
   hill = [
@@ -166,7 +166,7 @@ function SimulationModel() {
   var hSc1 = 0.5;
   var dropTrack = new Track( this, this.tracks, drop, true, null, this.availableModelBoundsProperty,{trackName:'Drop', hScale: vSc1, vScale: hSc1} );
   var bankTrack = new Track( this, this.tracks, bank, true, null, this.availableModelBoundsProperty,
-   {trackName:'Bank', hScale: vSc1, vScale: hSc1, vRange: new Range(0,1)} );
+    {trackName:'Bank', hScale: vSc1, vScale: hSc1, vRange: new Range(0,1)} );
   var hillTrack = new Track( this, this.tracks, hill, true, null, this.availableModelBoundsProperty, {trackName:'Hill', hScale: vSc1, vScale: hSc1} );
   var loopTrack = new Track( this, this.tracks, loop, true, null, this.availableModelBoundsProperty, {trackName:'Loop', hScale: vSc1, vScale: hSc1} );
   var flatTrack = new Track( this, this.tracks, flat, true, null, this.availableModelBoundsProperty, {trackName:'Flat', hScale: vSc1, vScale: hSc1} );
@@ -349,11 +349,11 @@ return inherit( PropertySet, SimulationModel , {
      * @return {SkaterState} the new state
      */
 
-    stepFreeFall: function( dt, skaterState, justLeft ) {
-      var initialEnergy = skaterState.getTotalEnergy();
+     stepFreeFall: function( dt, skaterState, justLeft ) {
+       var initialEnergy = skaterState.getTotalEnergy();
 
-      var acceleration = new Vector2( 0, skaterState.gravity );
-      this.skater.acceleration = acceleration;
+       var acceleration = new Vector2( 0, skaterState.gravity );
+       this.skater.acceleration = acceleration;
 
       this.skater.normalForce = new Vector2(0,0); //normal force = 0 free fall
 
@@ -400,9 +400,9 @@ return inherit( PropertySet, SimulationModel , {
       // eyeballing it for now.
       var offset = new Vector2( -5.1, -0.85 );
       var controlPoints = [
-        new ControlPoint( offset.x - 1, offset.y ),
-        new ControlPoint( offset.x, offset.y ),
-        new ControlPoint( offset.x + 1, offset.y )
+      new ControlPoint( offset.x - 1, offset.y ),
+      new ControlPoint( offset.x, offset.y ),
+      new ControlPoint( offset.x + 1, offset.y )
       ];
       this.tracks.add( new Track( this, this.tracks, controlPoints, true, null, this.availableModelBoundsProperty ) );
     },
@@ -590,8 +590,8 @@ return inherit( PropertySet, SimulationModel , {
      * @return {Number} netForce in the X direction
      */
      getNetForceWithoutNormalX: function( skaterState ) {
-      return this.getFrictionForceX( skaterState );
-    },
+       return this.getFrictionForceX( skaterState );
+     },
 
     /**
      * Gets the net force but without the normal force.
@@ -602,8 +602,8 @@ return inherit( PropertySet, SimulationModel , {
      * @return {Number} netForce in the Y direction
      */
      getNetForceWithoutNormalY: function( skaterState ) {
-      return skaterState.mass * skaterState.gravity + this.getFrictionForceY( skaterState );
-    },
+       return skaterState.mass * skaterState.gravity + this.getFrictionForceY( skaterState );
+     },
 
     // The only other force on the object in the direction of motion is the gravity force
     // Component-wise to reduce allocations, see #50
@@ -1051,8 +1051,8 @@ return inherit( PropertySet, SimulationModel , {
     returnSkaterStart: function() { //I think Dinesh wrote it ?
       if(this.getAllTracks())
       {
-       var track = this.getAllTracks()[0];
-       var skater = this.skater;
+        var track = this.getAllTracks()[0];
+        var skater = this.skater;
 //	var position = track.getTrackStartingPoint();
 var position = track.getLeftControlPointXY();
 position = new Vector2(position.x+0.2, position.y);
@@ -1097,18 +1097,18 @@ position = new Vector2(position.x+0.2, position.y);
       return allTracks;
     },
 
-getPhysicalTracks: function() {
-  var physicalTracks = [];
-  for ( var i = 0; i < this.tracks.length; i++ ) {
-    var track = this.tracks.get( i );
-    if ( track.physical ) {
-      physicalTracks.push( track );
-    }
-  }
-  return physicalTracks;
-},
+    getPhysicalTracks: function() {
+      var physicalTracks = [];
+      for ( var i = 0; i < this.tracks.length; i++ ) {
+        var track = this.tracks.get( i );
+        if ( track.physical ) {
+          physicalTracks.push( track );
+        }
+      }
+      return physicalTracks;
+    },
 
-getNonPhysicalTracks: function() {
+    getNonPhysicalTracks: function() {
   // Use vanilla instead of lodash for speed since this is in an inner loop
   var nonphysicalTracks = [];
   for ( var i = 0; i < this.tracks.length; i++ ) {
@@ -1144,10 +1144,10 @@ snapControlPoint: function( track ) {
     }
   }
 //     return bestDistance;
-    if (bestDistance < MIN_DIST) {
+if (bestDistance < MIN_DIST) {
       //	bestOtherPoint.snapTarget = bestPoint;
       if( bestOtherPoint == controlPoint[0]) {
-       track.controlPoints[0].snapTarget = bestPoint;
+        track.controlPoints[0].snapTarget = bestPoint;
       }
       else {
         track.controlPoints[track.controlPoints.length-1].snapTarget = bestPoint;
@@ -1156,11 +1156,12 @@ snapControlPoint: function( track ) {
       track.trigger('scaled');
       return true;
     }
-  else { return null; } 
-},
+    else { return null; } 
+  },
 
     // Find whatever track is connected to the specified track and join them together to a new track
     joinTracks: function( track ) {
+      console.log("calling 1");
       var flag=0;
       var connectedPoint = track.getSnapTarget();
       var physicalTracks = this.getPhysicalTracks();
@@ -1168,18 +1169,25 @@ snapControlPoint: function( track ) {
       for ( var i = 0; i < physicalTracks.length; i++ ) {
         otherTrack = physicalTracks[i];
          // *** TODO: @vishesh - contrains control point should check for order here - and not connect starting points or ending points *** //
-        if ( otherTrack.containsControlPoint( connectedPoint ) ) {
-          this.joinTrackToTrack( track, otherTrack );
-          flag=1;
-          break;
-        }
-      }
-      if (flag == 1) {
-        return true;
-      }
-      else {
-        return false;
-      }	
+         if ( otherTrack.containsControlPoint( connectedPoint ) ) {
+           if (this.joinTrackToTrack( track, otherTrack )) {
+             console.log("successfully joiined");
+             flag=1;
+             break;
+           }
+           else {
+             console.log("faiiled to join");
+           }
+         }
+       }
+       if (flag == 1) {
+         console.log("join flag 1");
+         return true;
+       }
+       else {
+         console.log("unjoin flag 1");
+         return false;
+       }	
 
       // if the number of control points is low enough, replenish the toolbox
 /*      if ( this.getNumberOfControlPoints() <= MAX_NUMBER_CONTROL_POINTS - 3 ) {
@@ -1189,6 +1197,7 @@ snapControlPoint: function( track ) {
 
     // Merge the track very close to the given track, but not snapped due to controlPoint Error
     joinTracks2: function( track ) {
+      console.log("calling 1");
       var flag=0;
       var connectedPoint = track.getSnapTarget();
       for ( var i = 0; i < this.getPhysicalTracks().length; i++ ) {
@@ -1198,17 +1207,24 @@ snapControlPoint: function( track ) {
           var value = otherTrack.closestControlPoint( connectedPoint );
           if ( value ) {
             track.setSnapTarget(value);
-            this.joinTrackToTrack( track, otherTrack );
-            flag=1;
-            break;
+            if (this.joinTrackToTrack( track, otherTrack )) {
+              flag=1;
+              console.log("joined 2");
+              break;
+            }
+            else {
+              console.log("faiiled to join");
+            }
           }
         }
       }
       if(flag==1) {
-      	return true;
+        console.log("join flag 2");
+        return true;
       }
       else {
-      	return false;
+        console.log("unjoin flag 2");
+        return false;
       }	
     },
 
@@ -1313,42 +1329,53 @@ snapControlPoint: function( track ) {
       	points.push( a.controlPoints[0].copyWithSnap() );
       	for ( i = 1; i < a.controlPoints.length; i++ ) { points.push( a.controlPoints[i].copy() ); }
       };
-      var firstTrackBackward = function() {
-        points.push( a.controlPoints[a.controlPoints.length - 1].copyWithSnap() );
-        for ( i = a.controlPoints.length - 2; i >= 0; i-- ) { points.push( a.controlPoints[i].copy() ); }
-      };
-      var secondTrackForward = function() {
-        for ( i = 1; i < b.controlPoints.length-1; i++ ) {points.push( b.controlPoints[i].copy() ); }
-        points.push( b.controlPoints[i].copyWithSnap() );
-      };
-      var secondTrackBackward = function() {
-        for ( i = b.controlPoints.length - 2; i >= 1; i-- ) {points.push( b.controlPoints[i].copy() ); }
-        points.push( b.controlPoints[i].copyWithSnap() );
-      };
+    var firstTrackBackward = function() {
+      points.push( a.controlPoints[a.controlPoints.length - 1].copyWithSnap() );
+      for ( i = a.controlPoints.length - 2; i >= 0; i-- ) { points.push( a.controlPoints[i].copy() ); }
+    };
+  var secondTrackForward = function() {
+    for ( i = 1; i < b.controlPoints.length-1; i++ ) {points.push( b.controlPoints[i].copy() ); }
+      points.push( b.controlPoints[i].copyWithSnap() );
+  };
+  var secondTrackBackward = function() {
+    for ( i = b.controlPoints.length - 2; i >= 1; i-- ) {points.push( b.controlPoints[i].copy() ); }
+      points.push( b.controlPoints[i].copyWithSnap() );
+  };
 
       // Only include one copy of the snapped point
       // Forward Forward
-      if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[0] ) {
-        firstTrackForward();
-        secondTrackForward();
-      }
+      
 
       // Forward Backward
-      else if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[b.controlPoints.length - 1] ) {
+      if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[b.controlPoints.length - 1] ) {
+        console.log("for-back");
+        return false;
         firstTrackForward();
         secondTrackBackward();
+        
+        console.log("did this cancel?");
       }
 
       // Backward Forward
       else if ( a.controlPoints[0].snapTarget === b.controlPoints[0] ) {
+        console.log("back-for");
+        return false;
         firstTrackBackward();
         secondTrackForward();
+        
+        console.log("did this cancel?");
       }
 
       // Backward backward
       else if ( a.controlPoints[0].snapTarget === b.controlPoints[b.controlPoints.length - 1] ) {
+        console.log("back-back");
         firstTrackBackward();
         secondTrackBackward();
+      }
+      else if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[0] ) {
+        console.log("for-for");
+        firstTrackForward();
+        secondTrackForward();
       }
 
       this.mergedTrackCount = this.mergedTrackCount + 1;
@@ -1360,7 +1387,7 @@ snapControlPoint: function( track ) {
       	a.getParentsOrSelf().concat( b.getParentsOrSelf() ), 
       	this.availableModelBoundsProperty,
       	{ trackName: trackName } 
-      );
+        );
 
       newTrack.physical = true;
       newTrack.dropped = true;
@@ -1418,6 +1445,7 @@ snapControlPoint: function( track ) {
 
       // When joining tracks, smooth out the new track, but without moving the point that joined the tracks, see #177 #238
       newTrack.smoothPointOfHighestCurvature( [] );
+      return true;
     },
     
 
