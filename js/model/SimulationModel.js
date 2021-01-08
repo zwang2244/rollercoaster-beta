@@ -1,5 +1,5 @@
 /************************************************
-*		Model for Simulation		*
+*   Model for Simulation    *
 *************************************************
 *
 * Defines simulation state variables
@@ -125,13 +125,13 @@ function SimulationModel() {
   ];
 
   bank = [
-  new ControlPoint( 0, 0 ),
-  new ControlPoint( 1, 0.10 ),
-  new ControlPoint( 2.1, 0.75 ),
-  new ControlPoint( 3, 2.5 ),
-  new ControlPoint( 3.9, 4.25 ),
-  new ControlPoint( 5, 4.90 ),
   new ControlPoint( 6, 5 ),
+  new ControlPoint( 5, 4.90 ),
+  new ControlPoint( 3.9, 4.25 ),
+  new ControlPoint( 3, 2.5 ),
+  new ControlPoint( 2.1, 0.75 ),
+  new ControlPoint( 1, 0.10 ),
+  new ControlPoint( 0, 0 ),
   ];
 
   hill = [
@@ -166,7 +166,7 @@ function SimulationModel() {
   var hSc1 = 0.5;
   var dropTrack = new Track( this, this.tracks, drop, true, null, this.availableModelBoundsProperty,{trackName:'Drop', hScale: vSc1, vScale: hSc1} );
   var bankTrack = new Track( this, this.tracks, bank, true, null, this.availableModelBoundsProperty,
-    {trackName:'Bank', hScale: vSc1, vScale: hSc1, vRange: new Range(0,1)} );
+   {trackName:'Bank', hScale: vSc1, vScale: hSc1, vRange: new Range(0,1)} );
   var hillTrack = new Track( this, this.tracks, hill, true, null, this.availableModelBoundsProperty, {trackName:'Hill', hScale: vSc1, vScale: hSc1} );
   var loopTrack = new Track( this, this.tracks, loop, true, null, this.availableModelBoundsProperty, {trackName:'Loop', hScale: vSc1, vScale: hSc1} );
   var flatTrack = new Track( this, this.tracks, flat, true, null, this.availableModelBoundsProperty, {trackName:'Flat', hScale: vSc1, vScale: hSc1} );
@@ -185,7 +185,7 @@ function SimulationModel() {
   this.allTracks.addAll([dropTrack, bankTrack, hillTrack, loopTrack]);
 
   this.trackScaleProperty.link( function (scale ) {
-  	var point, scaledPoint, xHScale, xVScale;
+    var point, scaledPoint, xHScale, xVScale;
     model.tracks.forEach( function(track) {
       for(var i=0;i<track.controlPoints.length;i++) {
         point = track.controlPoints[i].sourcePosition;
@@ -350,10 +350,10 @@ return inherit( PropertySet, SimulationModel , {
      */
 
      stepFreeFall: function( dt, skaterState, justLeft ) {
-       var initialEnergy = skaterState.getTotalEnergy();
+      var initialEnergy = skaterState.getTotalEnergy();
 
-       var acceleration = new Vector2( 0, skaterState.gravity );
-       this.skater.acceleration = acceleration;
+      var acceleration = new Vector2( 0, skaterState.gravity );
+      this.skater.acceleration = acceleration;
 
       this.skater.normalForce = new Vector2(0,0); //normal force = 0 free fall
 
@@ -590,8 +590,8 @@ return inherit( PropertySet, SimulationModel , {
      * @return {Number} netForce in the X direction
      */
      getNetForceWithoutNormalX: function( skaterState ) {
-       return this.getFrictionForceX( skaterState );
-     },
+      return this.getFrictionForceX( skaterState );
+    },
 
     /**
      * Gets the net force but without the normal force.
@@ -602,8 +602,8 @@ return inherit( PropertySet, SimulationModel , {
      * @return {Number} netForce in the Y direction
      */
      getNetForceWithoutNormalY: function( skaterState ) {
-       return skaterState.mass * skaterState.gravity + this.getFrictionForceY( skaterState );
-     },
+      return skaterState.mass * skaterState.gravity + this.getFrictionForceY( skaterState );
+    },
 
     // The only other force on the object in the direction of motion is the gravity force
     // Component-wise to reduce allocations, see #50
@@ -1051,12 +1051,12 @@ return inherit( PropertySet, SimulationModel , {
     returnSkaterStart: function() { //I think Dinesh wrote it ?
       if(this.getAllTracks())
       {
-        var track = this.getAllTracks()[0];
-        var skater = this.skater;
-//	var position = track.getTrackStartingPoint();
+       var track = this.getAllTracks()[0];
+       var skater = this.skater;
+//  var position = track.getTrackStartingPoint();
 var position = track.getLeftControlPointXY();
 position = new Vector2(position.x+0.2, position.y);
-	//add a small offset to that left most controlPoint to make it easier for stater to move
+  //add a small offset to that left most controlPoint to make it easier for stater to move
 
   var closestTrackAndPositionAndParameter = this.getClosestTrackAndPositionAndParameter( position, this.getPhysicalTracks() );
   var closestPoint = closestTrackAndPositionAndParameter.point;
@@ -1109,31 +1109,32 @@ position = new Vector2(position.x+0.2, position.y);
     },
 
     getNonPhysicalTracks: function() {
-  // Use vanilla instead of lodash for speed since this is in an inner loop
-  var nonphysicalTracks = [];
-  for ( var i = 0; i < this.tracks.length; i++ ) {
-    var track = this.tracks.get( i );
-    if ( !track.physical ) {
-      nonphysicalTracks.push( track );
-    }
-  }
-  return nonphysicalTracks;
-},
 
-snapControlPoint: function( track ) {
-  var tracks = this.getAllTracks();
-  var bestDistance = null;
-  var bestPoint = null;
-  var t,distance;
-  var controlPoint = [track.controlPoints[0], track.controlPoints[track.controlPoints.length - 1]];
-  var bestOtherPoint = controlPoint[0];
+      // Use vanilla instead of lodash for speed since this is in an inner loop
+      var nonphysicalTracks = [];
+      for ( var i = 0; i < this.tracks.length; i++ ) {
+        var track = this.tracks.get( i );
+
+        if ( !track.physical ) {
+          nonphysicalTracks.push( track );
+        }
+      }
+      return nonphysicalTracks;
+    },
+    snapControlPoint: function( track ) {
+      var tracks = this.getAllTracks();
+      var bestDistance = null;
+      var bestPoint = null;
+      var t,distance;
+      var controlPoint = [track.controlPoints[0], track.controlPoints[track.controlPoints.length - 1]];
+      var bestOtherPoint = controlPoint[0];
 
   for(var k=0; k < 2 ; k++ ) { //2 controlPoints for given track
     for(var i=0; i < tracks.length; i++) {
       t=tracks[i];
       if(t.trackName !== track.trackName) {
         var myPoints = [t.controlPoints[0], t.controlPoints[t.controlPoints.length - 1]];
-	      for(var j=0; j<2; j++) { // 2 control points for each track
+        for(var j=0; j<2; j++) { // 2 control points for each track
           distance = myPoints[j].position.distance(controlPoint[k].position);
           if(bestDistance==null) { bestDistance = distance; bestPoint = myPoints[j];}
           bestPoint = (distance < bestDistance) ? myPoints[j] : bestPoint;
@@ -1145,49 +1146,40 @@ snapControlPoint: function( track ) {
   }
 //     return bestDistance;
 if (bestDistance < MIN_DIST) {
-      //	bestOtherPoint.snapTarget = bestPoint;
+      //  bestOtherPoint.snapTarget = bestPoint;
       if( bestOtherPoint == controlPoint[0]) {
-        track.controlPoints[0].snapTarget = bestPoint;
-      }
-      else {
-        track.controlPoints[track.controlPoints.length-1].snapTarget = bestPoint;
-      }
-      track.updateSplines();
-      track.trigger('scaled');
-      return true;
+       track.controlPoints[0].snapTarget = bestPoint;
+     }
+     else {
+      track.controlPoints[track.controlPoints.length-1].snapTarget = bestPoint;
     }
-    else { return null; } 
-  },
+    track.updateSplines();
+    track.trigger('scaled');
+    return true;
+  }
+  else { return null; } 
+},
 
     // Find whatever track is connected to the specified track and join them together to a new track
     joinTracks: function( track ) {
-      console.log("calling 1");
       var flag=0;
       var connectedPoint = track.getSnapTarget();
       var physicalTracks = this.getPhysicalTracks();
       var otherTrack;
       for ( var i = 0; i < physicalTracks.length; i++ ) {
-        otherTrack = physicalTracks[i];
-         // *** TODO: @vishesh - contrains control point should check for order here - and not connect starting points or ending points *** //
-         if ( otherTrack.containsControlPoint( connectedPoint ) ) {
-           if (this.joinTrackToTrack( track, otherTrack )) {
-             console.log("successfully joiined");
-             flag=1;
-             break;
-           }
-           else {
-             console.log("faiiled to join");
-           }
-         }
-       }
-       if (flag == 1) {
-         console.log("join flag 1");
-         return true;
-       }
-       else {
-         console.log("unjoin flag 1");
-         return false;
-       }	
+       otherTrack = physicalTracks[i];
+       if ( otherTrack.containsControlPoint( connectedPoint ) ) {
+        this.joinTrackToTrack( track, otherTrack );
+        flag=1;
+        break;
+      }
+    }
+    if(flag==1) {
+     return true;
+   }
+   else {
+     return false;
+   }  
 
       // if the number of control points is low enough, replenish the toolbox
 /*      if ( this.getNumberOfControlPoints() <= MAX_NUMBER_CONTROL_POINTS - 3 ) {
@@ -1197,7 +1189,6 @@ if (bestDistance < MIN_DIST) {
 
     // Merge the track very close to the given track, but not snapped due to controlPoint Error
     joinTracks2: function( track ) {
-      console.log("calling 1");
       var flag=0;
       var connectedPoint = track.getSnapTarget();
       for ( var i = 0; i < this.getPhysicalTracks().length; i++ ) {
@@ -1207,25 +1198,18 @@ if (bestDistance < MIN_DIST) {
           var value = otherTrack.closestControlPoint( connectedPoint );
           if ( value ) {
             track.setSnapTarget(value);
-            if (this.joinTrackToTrack( track, otherTrack )) {
-              flag=1;
-              console.log("joined 2");
-              break;
-            }
-            else {
-              console.log("faiiled to join");
-            }
+            this.joinTrackToTrack( track, otherTrack );
+            flag=1;
+            break;
           }
         }
       }
       if(flag==1) {
-        console.log("join flag 2");
         return true;
       }
       else {
-        console.log("unjoin flag 2");
         return false;
-      }	
+      } 
     },
 
     // The user has pressed the "delete" button for the specified track's specified control point, and it should be
@@ -1326,67 +1310,55 @@ if (bestDistance < MIN_DIST) {
       // Join in the right direction for a & b so that the joined point is in the middle
 
       var firstTrackForward = function() {
-      	points.push( a.controlPoints[0].copyWithSnap() );
-      	for ( i = 1; i < a.controlPoints.length; i++ ) { points.push( a.controlPoints[i].copy() ); }
+        points.push( a.controlPoints[0].copyWithSnap() );
+        for ( i = 1; i < a.controlPoints.length; i++ ) { points.push( a.controlPoints[i].copy() ); }
       };
-    var firstTrackBackward = function() {
-      points.push( a.controlPoints[a.controlPoints.length - 1].copyWithSnap() );
-      for ( i = a.controlPoints.length - 2; i >= 0; i-- ) { points.push( a.controlPoints[i].copy() ); }
-    };
-  var secondTrackForward = function() {
-    for ( i = 1; i < b.controlPoints.length-1; i++ ) {points.push( b.controlPoints[i].copy() ); }
-      points.push( b.controlPoints[i].copyWithSnap() );
-  };
-  var secondTrackBackward = function() {
-    for ( i = b.controlPoints.length - 2; i >= 1; i-- ) {points.push( b.controlPoints[i].copy() ); }
-      points.push( b.controlPoints[i].copyWithSnap() );
-  };
+      var firstTrackBackward = function() {
+       points.push( a.controlPoints[a.controlPoints.length - 1].copyWithSnap() );
+       for ( i = a.controlPoints.length - 2; i >= 0; i-- ) { points.push( a.controlPoints[i].copy() ); }
+      };
+      var secondTrackForward = function() {
+        for ( i = 1; i < b.controlPoints.length-1; i++ ) {points.push( b.controlPoints[i].copy() ); }
+          points.push( b.controlPoints[i].copyWithSnap() );
+      };
+      var secondTrackBackward = function() {
+        for ( i = b.controlPoints.length - 2; i >= 1; i-- ) {points.push( b.controlPoints[i].copy() ); }
+          points.push( b.controlPoints[i].copyWithSnap() );
+      };
 
       // Only include one copy of the snapped point
       // Forward Forward
-      
+      if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[0] ) {
+        firstTrackForward();
+        secondTrackForward();
+      }
 
       // Forward Backward
-      if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[b.controlPoints.length - 1] ) {
-        console.log("for-back");
-        return false;
+      else if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[b.controlPoints.length - 1] ) {
         firstTrackForward();
         secondTrackBackward();
-        
-        console.log("did this cancel?");
       }
 
       // Backward Forward
       else if ( a.controlPoints[0].snapTarget === b.controlPoints[0] ) {
-        console.log("back-for");
-        return false;
         firstTrackBackward();
         secondTrackForward();
-        
-        console.log("did this cancel?");
       }
 
       // Backward backward
       else if ( a.controlPoints[0].snapTarget === b.controlPoints[b.controlPoints.length - 1] ) {
-        console.log("back-back");
         firstTrackBackward();
         secondTrackBackward();
       }
-      else if ( a.controlPoints[a.controlPoints.length - 1].snapTarget === b.controlPoints[0] ) {
-        console.log("for-for");
-        firstTrackForward();
-        secondTrackForward();
-      }
-
       this.mergedTrackCount = this.mergedTrackCount + 1;
       var trackName = "Track" + this.mergedTrackCount.toString();
       var newTrack = new Track( this, 
-      	this.tracks, 
-      	points,
-      	true, 
-      	a.getParentsOrSelf().concat( b.getParentsOrSelf() ), 
-      	this.availableModelBoundsProperty,
-      	{ trackName: trackName } 
+        this.tracks, 
+        points,
+        true, 
+        a.getParentsOrSelf().concat( b.getParentsOrSelf() ), 
+        this.availableModelBoundsProperty,
+        {trackName: trackName } 
         );
 
       newTrack.physical = true;
@@ -1408,7 +1380,7 @@ if (bestDistance < MIN_DIST) {
 
       // Move skater to new track if he was on the old track, by searching for the best fit point on the new track
       // Note: Energy is not conserved when tracks joined since the user has added or removed energy from the system
-      /*
+/*
       if ( this.skater.track === a || this.skater.track === b ) {
 
         var originalDirectionVector = this.skater.track.getUnitParallelVector( this.skater.u ).times( this.skater.uD );
@@ -1445,10 +1417,7 @@ if (bestDistance < MIN_DIST) {
 
       // When joining tracks, smooth out the new track, but without moving the point that joined the tracks, see #177 #238
       newTrack.smoothPointOfHighestCurvature( [] );
-      return true;
     },
-    
-
     // When a track is dragged, update the skater's energy (if the sim was paused), since it wouldn't be handled in the
     // update loop.
     trackModified: function( track ) {
@@ -1524,4 +1493,3 @@ if (bestDistance < MIN_DIST) {
 /********** Simulation States *********************************************************
 
 ****************************************************************************************/
-
