@@ -410,13 +410,19 @@ define( function( require ) {
     mergeTracksButton.top = adjHeightsButton.top;
 
     //Zhilin
-    resetButtonNode.right =  View.layoutBounds.right + 75;
-    resetButtonNode.top =  View.interfaceHeight + 10;
+
+    resetButtonNode.right =  adjWidthButton.left + 170;
+    resetButtonNode.top =  adjWidthButton.top + 15;
+
     checkBoxes.right = View.layoutBounds.right - 10;
     checkBoxes.top = View.layoutBounds.top + 5;
-    eraserButtonNode.centerX = resetButtonNode.centerX;
-    eraserButtonNode.top = resetButtonNode.bottom + 10;
-    massFrictionPanel.right = resetButtonNode.left - 120;
+
+
+    eraserButtonNode.centerY = resetButtonNode.centerY + 2;
+    eraserButtonNode.right = resetButtonNode.left - 10 ;
+
+
+    massFrictionPanel.right = View.layoutBounds.right + 65 - 120;
     massFrictionPanel.top = View.interfaceHeight + 15;
 
     doneButton.centerX=60;
