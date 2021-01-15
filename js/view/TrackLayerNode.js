@@ -75,7 +75,7 @@ define( function( require ) {
             var trackWidth = track.getRightControlPointX() - track.getLeftControlPointX();
             var hScale = track.hScaleProperty.get();
 	    var trackSlider = new ControlSlider ( 
-	    	track.trackName + " Width",
+	    	track.trackName + " Length",
 	    	 'm',
 	    	 track.hScaleProperty,
 	    	 new Range(0.4,0.8), //width range

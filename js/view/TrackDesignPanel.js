@@ -263,7 +263,7 @@ var mergeTracks = function() {
     },
   } );
 
-  var adjWidthButton = new TextPushButton (  'Adjust Width', {
+  var adjWidthButton = new TextPushButton (  'Adjust Length', {
     baseColor: 'rgb(50,50,180)',
     font: new PhetFont( 12 ),
     textFill: 'white',
