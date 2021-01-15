@@ -110,61 +110,67 @@ define( function( require ) {
     this.addInputListener( new SimpleDragHandler(
       {
         start: function( event ) {
-          skater.dragging = true;
+          // skater.dragging = true;
+          skater.dragging = false;
 
           // Clear thermal energy whenever skater is grabbed, see #32
           skater.thermalEnergy = 0;
 
           // Jump to the input location when dragged
-          this.drag( event );
+          if (skater.dragging){
+            this.drag( event );
+          }
         },
 
         drag: function( event ) {
+          // console.log(event);
+          // console.log(skater.dragging);
+          if (skater.dragging) {
+            var globalPoint = skaterNode.globalToParentPoint( event.pointer.point );
+            var position = modelViewTransform.viewToModelPosition( globalPoint );
 
-          var globalPoint = skaterNode.globalToParentPoint( event.pointer.point );
-          var position = modelViewTransform.viewToModelPosition( globalPoint );
+            // make sure it is within the visible bounds
+            position = view.availableModelBounds.getClosestPoint( position.x, position.y, position ); //works if layout function exists in View
 
-          // make sure it is within the visible bounds
-          position = view.availableModelBounds.getClosestPoint( position.x, position.y, position ); //works if layout function exists in View
+            // PERFORMANCE/ALLOCATION: lots of unnecessary allocations and computation here, biggest improvement could be
+            // to use binary search for position on the track
+            var closestTrackAndPositionAndParameter = getClosestTrackAndPositionAndParameter( position, getPhysicalTracks() );
+            var closeEnough = false;
+            if ( closestTrackAndPositionAndParameter && closestTrackAndPositionAndParameter.track && closestTrackAndPositionAndParameter.track.isParameterInBounds( closestTrackAndPositionAndParameter.u ) ) {
+              var closestPoint = closestTrackAndPositionAndParameter.point;
+              var distance = closestPoint.distance( position );
+              if ( distance < 0.5 ) {
+                position = closestPoint;
+                targetTrack = closestTrackAndPositionAndParameter.track;
+                targetU = closestTrackAndPositionAndParameter.u;
 
-          // PERFORMANCE/ALLOCATION: lots of unnecessary allocations and computation here, biggest improvement could be
-          // to use binary search for position on the track
-          var closestTrackAndPositionAndParameter = getClosestTrackAndPositionAndParameter( position, getPhysicalTracks() );
-          var closeEnough = false;
-          if ( closestTrackAndPositionAndParameter && closestTrackAndPositionAndParameter.track && closestTrackAndPositionAndParameter.track.isParameterInBounds( closestTrackAndPositionAndParameter.u ) ) {
-            var closestPoint = closestTrackAndPositionAndParameter.point;
-            var distance = closestPoint.distance( position );
-            if ( distance < 0.5 ) {
-              position = closestPoint;
-              targetTrack = closestTrackAndPositionAndParameter.track;
-              targetU = closestTrackAndPositionAndParameter.u;
+                // Choose the right side of the track, i.e. the side of the track that would have the skater upside up
+                var normal = targetTrack.getUnitNormalVector( targetU );
+                skater.up = normal.y > 0;
 
-              // Choose the right side of the track, i.e. the side of the track that would have the skater upside up
-              var normal = targetTrack.getUnitNormalVector( targetU );
-              skater.up = normal.y > 0;
+                skater.angle = targetTrack.getViewAngleAt( targetU ) + (skater.up ? 0 : Math.PI);
 
-              skater.angle = targetTrack.getViewAngleAt( targetU ) + (skater.up ? 0 : Math.PI);
-
-              closeEnough = true;
+                closeEnough = true;
+              }
             }
+            if ( !closeEnough ) {
+              targetTrack = null;
+              targetU = null;
+
+              // make skater upright if not near the track
+              skater.angle = 0;
+              skater.up = true;
+
+              skater.position = position;
+            }
+
+            else {
+              skater.position = targetTrack.getPoint( targetU );
+            }
+
+            skater.updateEnergy();
+            skater.trigger( 'updated' );
           }
-          if ( !closeEnough ) {
-            targetTrack = null;
-            targetU = null;
-
-            // make skater upright if not near the track
-            skater.angle = 0;
-            skater.up = true;
-
-            skater.position = position;
-          }
-
-          else {
-            skater.position = targetTrack.getPoint( targetU );
-          }
-
-          skater.updateEnergy();
-          skater.trigger( 'updated' );
         },
 
         end: function() {
