@@ -86,18 +86,55 @@ speedFlagImgNode.scale(0.20);
 var mergeTracks = function() {
   var unmerged_tracks = model.getAllTracks() ;
   var tracks = model.getAllTracks();
-	//store the unmerged tracks
-  //model.previousTracks = tracks;
+      //store the unmerged tracks
+      //  model.previousTracks = tracks;
+  var resetTracks = function () {
+    model.tracks.clear();
+    model.previousTracks.forEach( function(track) {
+      track.interactive=true;
+      model.tracks.add(track);
+    });
+    model.previousTracks.clear();
+    model.mergedTrackCount = 0;
+  }
+  var getLeftX = function(track) {
+    var xs = [];
+    for (var c in track.controlPoints) {
+      xs.push(track.controlPoints[c].position.x);
+      // console.log(track.controlPoints[c].position);
+    }
+    // console.log(xs);
+    // console.log(Math.min(xs));
+    return Math.min(...xs);
+  }
+  var xDiffs = []
+  var leftXs = [];
   model.tracks.forEach( function(track) {
     model.previousTracks.add(track);
+    //given when new min X comes in, append to list od 
+    var newX = getLeftX(track);
+    console.log(newX);
+    for (var x in leftXs){
+      xDiffs.push(Math.abs(newX - leftXs[x]));  //find x difference between the new leftControlPoint and pre existing track's left points
+    }
+    console.log(xDiffs);
+    leftXs.push(newX); // append leftMost position of track's controlpoint to existing list of tracks
   } );
 
+  if (Math.min(...xDiffs) < 1.5) {
+    valueText.text = "Tracks are overlapping! Move them to avoid issues";
+    valueText.centerX = View.layoutBounds.centerX;
+    resetTracks();
+    return false;
+  }
+  
   var trackLength = tracks.length;
   var maxMerges = tracks.length - 1;
   var merges = 0, i = 0;
   var track,t, myPoints;
   valueText.text = "";
-  if(trackLength==0) {
+  if(trackLength==0)
+  {
     valueText.text = "Error ! No Track to simulate, add atleast one track ! ";
     valueText.centerX = View.layoutBounds.centerX;
     return false;
