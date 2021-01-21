@@ -480,6 +480,10 @@ var playPauseButton = new PlayPauseButton( playProperty ).mutate( {scale: 0.5} )
       model.returnSkaterStart();
       model.rollerState = 'start';
       model.manualStep();
+      
+      console.log(model.skater.changeList);
+
+      model.skater.changeList = [];
     }
   } );
     restartSkaterButton.scale(0.8);
@@ -610,3 +614,16 @@ disconnectTracksButton.centerY = simControlPanel.centerY;
   } );
 } );
 
+
+/*
+var savecsv = function (temp1) {
+  let csvContent = Object.keys(temp1[0]).join(",") + "\n" + temp1.map(e => Object.values(e).join(",")).join("\n");
+  var blob = new Blob([csvContent], { type: 'text/csv' });
+  var link = window.document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = link.href.split('/').pop() + '.csv'; 
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+*/

@@ -679,7 +679,9 @@ return inherit( PropertySet, SimulationModel , {
       var acceleration = this.skater.acceleration.magnitude();
       this.skater.maxAPos = (this.skater.maxA < acceleration) ? this.skater.position.copy() : this.skater.maxAPos;
       this.skater.maxA = (this.skater.maxA < acceleration) ? acceleration: this.skater.maxA ;
+      
 
+      
       var spd = this.skater.speedProperty.get();
       this.skater.maxUPos = (this.skater.maxU < spd) ? this.skater.position.copy() : this.skater.maxUPos;
       this.skater.maxU = Math.max(this.skater.maxU,spd);
@@ -698,6 +700,14 @@ return inherit( PropertySet, SimulationModel , {
       var newVelocityX = parallelUnitX * uD;
       var newVelocityY = parallelUnitY * uD;
 
+
+      // this.skater.forceList.push(this.skater.normalForce);
+      // this.skater.accelerationList.push(acceleration);
+      // this.skater.velocityList.push(acceleration);
+      // this.skater.xList.push(acceleration);
+      // this.skater.yList.push(acceleration);
+
+
       // Exponentially decay the velocity if already nearly zero and on a flat slope, see #129
       if ( parallelUnitX / parallelUnitY > 5 && Math.sqrt( newVelocityX * newVelocityX + newVelocityY * newVelocityY ) < 1E-2 ) {
         newVelocityX /= 2;
@@ -706,7 +716,9 @@ return inherit( PropertySet, SimulationModel , {
 
       // choose velocity by using the unit parallel vector to the track
       var newState = skaterState.updateUUDVelocityPosition( u, uD, newVelocityX, newVelocityY, newPointX, newPointY );
-      
+      var changeLog = {"time": dt, "normalForceX": this.skater.normalForce.x, "normalForceY": this.skater.normalForce.y, "u": u, "x": newPointX, "y": newPointY, "speed": spd, "velX": newVelocityX, "velY": newVelocityY};
+      this.skater.changeList.push(changeLog);
+
       if ( this.friction > 0 ) {
 
         // Compute friction force magnitude component-wise to prevent allocations, see #50
