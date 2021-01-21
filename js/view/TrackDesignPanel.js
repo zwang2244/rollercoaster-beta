@@ -81,37 +81,37 @@ var speedFlagImgNode = new Image ( flagImage2 );
 View.addChild(speedFlagImgNode);
 speedFlagImgNode.scale(0.20);
 
+var resetTracks = function () {
+  model.tracks.clear();
+  model.previousTracks.forEach( function(track) {
+    track.interactive=true;
+    model.tracks.add(track);
+  });
+  model.previousTracks.clear();
+  model.mergedTrackCount = 0;
+}
+
+var getLeftX = function(track) {
+  var xs = [];
+  for (var c in track.controlPoints) {
+    xs.push(track.controlPoints[c].position.x);
+  }
+  return Math.min(...xs);
+}
 
 //Function to merge the tracks
 var mergeTracks = function() {
   var unmerged_tracks = model.getAllTracks() ;
   var tracks = model.getAllTracks();
-      //store the unmerged tracks
-      //  model.previousTracks = tracks;
-  var resetTracks = function () {
-    model.tracks.clear();
-    model.previousTracks.forEach( function(track) {
-      track.interactive=true;
-      model.tracks.add(track);
-    });
-    model.previousTracks.clear();
-    model.mergedTrackCount = 0;
-  }
-  var getLeftX = function(track) {
-    var xs = [];
-    for (var c in track.controlPoints) {
-      xs.push(track.controlPoints[c].position.x);
-      // console.log(track.controlPoints[c].position);
-    }
-    // console.log(xs);
-    // console.log(Math.min(xs));
-    return Math.min(...xs);
-  }
+  //store the unmerged tracks
+  //model.previousTracks = tracks;
   var xDiffs = []
   var leftXs = [];
+  
   model.tracks.forEach( function(track) {
     model.previousTracks.add(track);
     //given when new min X comes in, append to list od 
+
     var newX = getLeftX(track);
     console.log(newX);
     for (var x in leftXs){
