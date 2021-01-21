@@ -96,6 +96,14 @@ define( function( require ) {
       //acceleration,forces
       acceleration: new Vector2( 0, 0 ),
 
+      forceList: [],
+      velocityList: [],
+      accelerationList: [],
+      xList: [],
+      yList: [],
+      speedList: [],
+      changeList: [],
+
       //normal force
       normalForce: new Vector2( 0, 0 ),
 
@@ -190,6 +198,8 @@ define( function( require ) {
       var friction = this.friction; //do not reset friction, will be controlled by model
 //      PropertySet.prototype.reset.call( this );
       this.friction = friction;
+      console.log(this.changeList);
+      this.changeList = [];
       this.updateEnergy();
 
       // Notify the graphics to re-render.  See #223
