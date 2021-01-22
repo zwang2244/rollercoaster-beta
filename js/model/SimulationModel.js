@@ -643,8 +643,12 @@ return inherit( PropertySet, SimulationModel , {
     getNormalForce: function( skaterState ) {
       skaterState.getCurvature( this.curvatureTemp2 );
       var radiusOfCurvature = Math.min( this.curvatureTemp2.r, 100000 );
+      const RADIUS_LOWER_END = 4;
+      if (Math.abs(radiusOfCurvature) < RADIUS_LOWER_END) {
+        radiusOfCurvature = RADIUS_LOWER_END * Math.sign(radiusOfCurvature);
+      }
       var netForceRadial = new Vector2();
-
+      // console.log(radiusOfCurvature);
       netForceRadial.addXY( 0, skaterState.mass * skaterState.gravity );// gravity
       var curvatureDirection = this.getCurvatureDirection( this.curvatureTemp2, skaterState.positionX, skaterState.positionY );
       var normalForce = skaterState.mass * skaterState.getSpeed() * skaterState.getSpeed() / Math.abs( radiusOfCurvature ) - netForceRadial.dot( curvatureDirection );
