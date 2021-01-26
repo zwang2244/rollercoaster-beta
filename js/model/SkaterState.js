@@ -19,6 +19,9 @@ define( function( require ) {
   // constants
   var EMPTY_OBJECT = {};
 
+  //zhilin
+  // var energylogs = [];
+  // var speedlogs = [];
   /**
    * Create a SkaterSate from a SkaterState or Skater
    * @param {Skater|SkaterSate} source
@@ -82,6 +85,29 @@ define( function( require ) {
 
         assert && assert( this.thermalEnergy >= 0 );
 
+        //Zhilin
+        // console.log("Thermal");
+        // console.log(this.thermalEnergy);
+        // console.log("Kinetic");
+        // console.log(0.5 * this.mass * (this.velocityX * this.velocityX + this.velocityY * this.velocityY));
+        // console.log("Potential");
+        // console.log(-this.mass * this.gravity * this.positionY);
+        // console.log("TotalEnergy");
+        // console.log(0.5 * this.mass * (this.velocityX * this.velocityX + this.velocityY * this.velocityY) - this.mass * this.gravity * this.positionY + this.thermalEnergy);
+        // var d = new Date();
+        // var n = d.getTime();  
+
+        // energylogs.push({Time: n, Thermal: this.thermalEnergy, 
+        //           Kinetic: 0.5 * this.mass * (this.velocityX * this.velocityX + this.velocityY * this.velocityY),
+        //           Potential:-this.mass * this.gravity * this.positionY, 
+        //           TotalEnergy: 0.5 * this.mass * (this.velocityX * this.velocityX + this.velocityY * this.velocityY) - this.mass * this.gravity * this.positionY + this.thermalEnergy});
+        // //logs.push(this.thermalEnergy);
+        // console.log(energylogs);
+
+        // speedlogs.push({Time: n, VelocityX: this.velocityX,
+        //                 VelocityY: this.velocityY});
+        // console.log(speedlogs);
+
         return this;
       },
 
@@ -91,6 +117,9 @@ define( function( require ) {
       },
 
       getKineticEnergy: function() {
+        //Zhilin
+       // console.log("Kinetic");
+        //console.log(0.5 * this.mass * (this.velocityX * this.velocityX + this.velocityY * this.velocityY));
         return 0.5 * this.mass * (this.velocityX * this.velocityX + this.velocityY * this.velocityY);
       },
 

@@ -342,6 +342,28 @@ define( function( require ) {
     eraserText.top = eraserButton.bottom + 5;    
     var eraserButtonNode = new Node( {children:[eraserText,eraserButton]} ); 
 
+// Zhilin
+// Export BUTTON
+
+var exportButton = new TextPushButton (  'Export Data', {
+  baseColor: 'rgb(50,50,180)',
+  font: new PhetFont( 12 ),
+  textFill: 'white',
+  xMargin: 10,
+  listener: function() {
+
+      //  model.trackDesignStateProperty.set('merge');
+      //  if(mergeTracks())
+      //  {
+      //    model.simStateProperty.set('simulation');
+      //  }
+      //  else
+      //  {
+      //    model.simStateProperty.set('design');
+      // model.trackDesignStateProperty.set('addTrack');
+      //  }
+  },
+} );
 
 // RESET All button     	
 
@@ -392,9 +414,11 @@ define( function( require ) {
 //    buttons.addChild(adjFrictionButton);
     buttons.addChild(adjWidthButton);
     buttons.addChild(mergeTracksButton);
-
+    //Zhilin
+    View.addChild(exportButton);
     View.addChild(doneButton);
     View.addChild(eraserButtonNode);
+    
     View.addChild(resetButtonNode);
 /*
     adjFrictionButton.centerX = adjHeightsButton.centerX;
@@ -421,6 +445,9 @@ define( function( require ) {
     eraserButtonNode.centerY = resetButtonNode.centerY + 2;
     eraserButtonNode.right = resetButtonNode.left - 10 ;
 
+    //Zhilin
+    exportButton.centerY = eraserButtonNode.centerY - 7;
+    exportButton.right = eraserButtonNode.left - 10;
 
     massFrictionPanel.right = View.layoutBounds.right + 65 - 120;
     massFrictionPanel.top = View.interfaceHeight + 15;
@@ -433,8 +460,10 @@ define( function( require ) {
     model.trackDesignStateProperty.link( function(state) {
     	adjHeightsButton.visible = (state == 'addTrack') ? true:false;
     	adjWidthButton.visible = (state == 'addTrack') ? true:false;
-    	adjFrictionButton.visible = (state == 'addTrack') ? true:false;
-    	eraserButtonNode.visible = (state == 'addTrack') ? true:false;
+      adjFrictionButton.visible = (state == 'addTrack') ? true:false;
+      //Zhilin
+      eraserButtonNode.visible = (state == 'addTrack') ? true:false;
+      //exportButton.visible = (state == 'addTrack') ? true:false;
     	mergeTracksButton.visible = (state == 'addTrack') ? true:false;
     	massFrictionPanel.visible = (state == 'addTrack') ? true:false;
     	doneButton.visible = ((state !== 'addTrack')&&(state!=='merge')) ? true:false;

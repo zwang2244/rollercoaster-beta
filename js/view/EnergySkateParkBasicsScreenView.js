@@ -311,6 +311,8 @@ define( function( require ) {
     this.addChild( gaugeNeedleNode );
     this.addChild( new BarGraphForeground( model.skater, barGraphBackground, model.property( 'barGraphVisible' ), renderer ) );
     this.addChild( skaterNode );
+    //Zhilin
+    //console.log(model.skater.kineticEnergyProperty);
 
     var pieChartNode = renderer === 'webgl' ? new PieChartWebGLNode( model.skater, model.property( 'pieChartVisible' ), modelViewTransform ) :
                        new PieChartNode( model.skater, model.property( 'pieChartVisible' ), modelViewTransform );
@@ -410,6 +412,7 @@ define( function( require ) {
         this.sceneSelectionPanel.centerX = panelAbove.centerX;
         this.sceneSelectionPanel.top = panelAbove.bottom + 5;
       }
+
       this.resetAllButton.right = this.controlPanel.right;
       this.returnSkaterButton.right = this.resetAllButton.left - 10;
 
