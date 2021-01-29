@@ -446,8 +446,10 @@ var exportButton = new TextPushButton (  'Export Data', {
     eraserButtonNode.right = resetButtonNode.left - 10 ;
 
     //Zhilin
-    exportButton.centerY = eraserButtonNode.centerY - 7;
-    exportButton.right = eraserButtonNode.left - 10;
+    // exportButton.centerY = eraserButtonNode.centerY - 7;
+    // exportButton.right = eraserButtonNode.left - 10;
+    exportButton.top = checkBoxes.top + 105;
+    exportButton.right = checkBoxes.right - 30;
 
     massFrictionPanel.right = View.layoutBounds.right + 65 - 120;
     massFrictionPanel.top = View.interfaceHeight + 15;
@@ -466,7 +468,8 @@ var exportButton = new TextPushButton (  'Export Data', {
       //exportButton.visible = (state == 'addTrack') ? true:false;
     	mergeTracksButton.visible = (state == 'addTrack') ? true:false;
     	massFrictionPanel.visible = (state == 'addTrack') ? true:false;
-    	doneButton.visible = ((state !== 'addTrack')&&(state!=='merge')) ? true:false;
+      doneButton.visible = ((state !== 'addTrack')&&(state!=='merge')) ? true:false;
+      exportButton.visible = ((state !== 'addTrack')) ? true:false;
 //    	resetButtonNode.visible = ((state=='addTrack')||(state=='merge')) ?true : false;
     } );
 
