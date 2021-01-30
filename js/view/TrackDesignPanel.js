@@ -4,7 +4,7 @@
  */
 
  define( function( require ) {
-   'use strict';
+ 	'use strict';
 
   // modules
   var inherit = require( 'PHET_CORE/inherit' );
@@ -37,9 +37,9 @@
   var Constants = require( 'ROLLERCOASTER/Constants' );
 
 	//images
-  var WallImage = require( 'image!ROLLERCOASTER/wall.png' );
-  var flagImage = require( 'image!ROLLERCOASTER/flag1.png' );
-  var flagImage2 = require( 'image!ROLLERCOASTER/flag2.png' );
+	var WallImage = require( 'image!ROLLERCOASTER/wall.png' );
+	var flagImage = require( 'image!ROLLERCOASTER/flag1.png' );
+	var flagImage2 = require( 'image!ROLLERCOASTER/flag2.png' );
 
   /**
    * @param {SimulationModel} model
@@ -47,15 +47,15 @@
    */
    function TrackDesignPanel( model, View, options ) {
 
-     options = _.extend( {
-       xMargin: 15,
-       yMargin: 10,
-       stroke: 'black',
-       lineWidth: 2,
-     }, options );
+   	options = _.extend( {
+   		xMargin: 15,
+   		yMargin: 10,
+   		stroke: 'black',
+   		lineWidth: 2,
+   	}, options );
 
-     Node.call( this );
-     var buttons = this;
+   	Node.call( this );
+   	var buttons = this;
 
 //Dummy text
 var valueText = new Text( "",new PhetFont(14) );
@@ -82,50 +82,50 @@ View.addChild(speedFlagImgNode);
 speedFlagImgNode.scale(0.20);
 
 var resetTracks = function () {
-  model.tracks.clear();
-  model.previousTracks.forEach( function(track) {
-    track.interactive=true;
-    model.tracks.add(track);
-  });
-  model.previousTracks.clear();
-  model.mergedTrackCount = 0;
+	model.tracks.clear();
+	model.previousTracks.forEach( function(track) {
+		track.interactive=true;
+		model.tracks.add(track);
+	});
+	model.previousTracks.clear();
+	model.mergedTrackCount = 0;
 }
 
 var getLeftX = function(track) {
-  var xs = [];
-  for (var c in track.controlPoints) {
-    xs.push(track.controlPoints[c].position.x);
-  }
-  return Math.min(...xs);
+	var xs = [];
+	for (var c in track.controlPoints) {
+		xs.push(track.controlPoints[c].position.x);
+	}
+	return Math.min(...xs);
 }
 
 //Function to merge the tracks
 var mergeTracks = function() {
-  var unmerged_tracks = model.getAllTracks() ;
-  var tracks = model.getAllTracks();
+	var unmerged_tracks = model.getAllTracks() ;
+	var tracks = model.getAllTracks();
   //store the unmerged tracks
   //model.previousTracks = tracks;
   var xDiffs = []
   var leftXs = [];
   
   model.tracks.forEach( function(track) {
-    model.previousTracks.add(track);
+  	model.previousTracks.add(track);
     //given when new min X comes in, append to list od 
 
     var newX = getLeftX(track);
     console.log(newX);
     for (var x in leftXs){
       xDiffs.push(Math.abs(newX - leftXs[x]));  //find x difference between the new leftControlPoint and pre existing track's left points
-    }
-    console.log(xDiffs);
+  }
+  console.log(xDiffs);
     leftXs.push(newX); // append leftMost position of track's controlpoint to existing list of tracks
-  } );
+} );
 
   if (Math.min(...xDiffs) < 1.5) {
-    valueText.text = "Tracks are overlapping! Move them to avoid issues";
-    valueText.centerX = View.layoutBounds.centerX;
-    resetTracks();
-    return false;
+  	valueText.text = "Tracks are overlapping! Move them to avoid issues";
+  	valueText.centerX = View.layoutBounds.centerX;
+  	resetTracks();
+  	return false;
   }
   
   var trackLength = tracks.length;
@@ -135,9 +135,9 @@ var mergeTracks = function() {
   valueText.text = "";
   if(trackLength==0)
   {
-    valueText.text = "Error ! No Track to simulate, add atleast one track ! ";
-    valueText.centerX = View.layoutBounds.centerX;
-    return false;
+  	valueText.text = "Error ! No Track to simulate, add atleast one track ! ";
+  	valueText.centerX = View.layoutBounds.centerX;
+  	return false;
   }
 	// if snapTarget is intact
 	while( (i < trackLength ) && ( merges < maxMerges ) ) {
@@ -150,14 +150,14 @@ var mergeTracks = function() {
 				i = 0;
 				tracks = model.getAllTracks();
         //valueText.text = valueText.text + tracks[trackLength-1].trackName;
-      }
+    }
 			else if(model.joinTracks2(track)) { // find the closest point if snapTarget exists but point shifted while merging some other track
 				merges++;
 				trackLength--;
 				i = 0;
 				tracks = model.getAllTracks();
         //valueText.text = valueText.text + tracks[trackLength-1].trackName;
-      }
+    }
 			else { //move on if snapping does not work
 				i++;
 			}
@@ -181,24 +181,24 @@ var mergeTracks = function() {
 			i = 0;
 			tracks = model.getAllTracks();
 //			valueText.text = valueText.text + tracks[trackLength-1].trackName;
-      continue;
-    }
-  i++;
+continue;
+}
+i++;
 }
 
 //	if(merges < maxMerges)
 	if(model.getAllTracks().length !==1 ) { //make sure there is only one track
 		valueText.text = "Error ! Tracks must be kept closer to merge properly !" + model.getAllTracks().length.toFixed(0);
-    valueText.centerX = View.layoutBounds.centerX;
+		valueText.centerX = View.layoutBounds.centerX;
 
-    model.tracks.clear();
-    model.previousTracks.forEach( function(track)
-    {
-      track.interactive=true;
-      model.tracks.add(track);
-    } );
-    model.previousTracks.clear();
-    model.mergedTrackCount = 0;
+		model.tracks.clear();
+		model.previousTracks.forEach( function(track)
+		{
+			track.interactive=true;
+			model.tracks.add(track);
+		} );
+		model.previousTracks.clear();
+		model.mergedTrackCount = 0;
   /*
       for(var i=0;i<unmerged_tracks.length;i++)
       {
@@ -226,9 +226,9 @@ var mergeTracks = function() {
 
 
     return false;
-  }
-  else
-  {
+}
+else
+{
 		//add flat portion of the track
 		var track  = model.getAllTracks();
 		var right = track[0].getRightControlPointXY();
@@ -264,9 +264,9 @@ var mergeTracks = function() {
 };
    // Mass Slider
    var massSlider = new ControlSlider (
-     "Car Mass",
-     'kg',
-     model.skater.massProperty,
+   	"Car Mass",
+   	'kg',
+   	model.skater.massProperty,
     	 new Range(Constants.MIN_MASS,Constants.MAX_MASS), //range
     	 function(val){return val;},
     	 new Property(true),
@@ -275,9 +275,9 @@ var mergeTracks = function() {
 
    //Friction SLIDER
    var frictionSlider = new ControlSlider (
-     "Friction",
-     '',
-     model.frictionProperty,
+   	"Friction",
+   	'',
+   	model.frictionProperty,
     	 new Range(0,0.1), //friction range
     	 function(val){return val;},
     	 new Property(true),
@@ -291,72 +291,72 @@ var mergeTracks = function() {
 
   //Adjust heights button 
   var adjHeightsButton = new TextPushButton (  'Adjust Height', {
-    baseColor: 'rgb(50,50,180)',
-    font: new PhetFont( 12 ),
-    textFill: 'white',
-    xMargin: 10,
-    listener: function() {
-      model.trackDesignStateProperty.set('height');
-    },
+  	baseColor: 'rgb(50,50,180)',
+  	font: new PhetFont( 12 ),
+  	textFill: 'white',
+  	xMargin: 10,
+  	listener: function() {
+  		model.trackDesignStateProperty.set('height');
+  	},
   } );
 
   var adjWidthButton = new TextPushButton (  'Adjust Length', {
-    baseColor: 'rgb(50,50,180)',
-    font: new PhetFont( 12 ),
-    textFill: 'white',
-    xMargin: 10,
-    listener: function() {
-      model.trackDesignStateProperty.set('width');
-    },
+  	baseColor: 'rgb(50,50,180)',
+  	font: new PhetFont( 12 ),
+  	textFill: 'white',
+  	xMargin: 10,
+  	listener: function() {
+  		model.trackDesignStateProperty.set('width');
+  	},
   } );
 
   var adjFrictionButton = new TextPushButton (  'Adjust Friction', {
-    baseColor: 'rgb(50,50,180)',
-    font: new PhetFont( 12 ),
-    textFill: 'white',
-    xMargin: 10,
-    listener: function() {
-      model.trackDesignStateProperty.set('friction');
-    },
+  	baseColor: 'rgb(50,50,180)',
+  	font: new PhetFont( 12 ),
+  	textFill: 'white',
+  	xMargin: 10,
+  	listener: function() {
+  		model.trackDesignStateProperty.set('friction');
+  	},
   } );
 
   var doneButton = new TextPushButton (  'Done', {
-    baseColor: 'rgb(50,50,180)',
-    font: new PhetFont( 14 ),
-    textFill: 'white',
-    xMargin: 10,
-    listener: function() {
-      model.trackDesignStateProperty.set('addTrack');
-    },
+  	baseColor: 'rgb(50,50,180)',
+  	font: new PhetFont( 14 ),
+  	textFill: 'white',
+  	xMargin: 10,
+  	listener: function() {
+  		model.trackDesignStateProperty.set('addTrack');
+  	},
   } );
 
 // JOIN TRACKS AND SIMULATE BUTTON            
 var mergeTracksButton = new TextPushButton (  'Join Tracks & Simulate', {
-  baseColor: 'rgb(50,50,180)',
-  font: new PhetFont( 12 ),
-  textFill: 'white',
-  xMargin: 10,
-  listener: function() {
+	baseColor: 'rgb(50,50,180)',
+	font: new PhetFont( 12 ),
+	textFill: 'white',
+	xMargin: 10,
+	listener: function() {
 
-    model.trackDesignStateProperty.set('merge');
-    if(mergeTracks())
-    {
-      model.simStateProperty.set('simulation');
-    }
-    else
-    {
-      model.simStateProperty.set('design');
-      model.trackDesignStateProperty.set('addTrack');
-    }
-  },
+		model.trackDesignStateProperty.set('merge');
+		if(mergeTracks())
+		{
+			model.simStateProperty.set('simulation');
+		}
+		else
+		{
+			model.simStateProperty.set('design');
+			model.trackDesignStateProperty.set('addTrack');
+		}
+	},
 } );
 
 // ERASER BUTTON
 var eraserButton = new EraserButton (  {
-  iconWidth : 24,
-  listener: function() {
-    model.trackDesignStateProperty.set('deleteTrack');
-  },
+	iconWidth : 24,
+	listener: function() {
+		model.trackDesignStateProperty.set('deleteTrack');
+	},
 } );
 
 var eraserText = new Text('Delete Track', {font:new PhetFont({ fill: 'black', size: 11}) } );
@@ -364,6 +364,28 @@ eraserText.centerX = eraserButton.centerX;
 eraserText.top = eraserButton.bottom + 5;    
 var eraserButtonNode = new Node( {children:[eraserText,eraserButton]} ); 
 
+// Zhilin
+// Export BUTTON
+
+var exportButton = new TextPushButton (  'Export Data', {
+	baseColor: 'rgb(50,50,180)',
+	font: new PhetFont( 12 ),
+	textFill: 'white',
+	xMargin: 10,
+	listener: function() {
+
+      //  model.trackDesignStateProperty.set('merge');
+      //  if(mergeTracks())
+      //  {
+      //    model.simStateProperty.set('simulation');
+      //  }
+      //  else
+      //  {
+      //    model.simStateProperty.set('design');
+      // model.trackDesignStateProperty.set('addTrack');
+      //  }
+  },
+} );
 
 // RESET All button     	
 
@@ -390,8 +412,8 @@ var options = {boxWidth: 18};
     // In the absence of any sun (or other) layout packages, just manually space them out so they will have the icons aligned
 
     var pad = function( itemSet ) {
-      var padWidth = 20 - itemSet.label.width;
-      return [itemSet.label, new Rectangle( 0, 0, padWidth + 20, 20 )];
+    	var padWidth = 20 - itemSet.label.width;
+    	return [itemSet.label, new Rectangle( 0, 0, padWidth + 20, 20 )];
     };
 
     var gridChkBox =  new CheckBox( new HBox( {children: pad(gridSet)} ), model.gridVisibleProperty , options );
@@ -414,10 +436,12 @@ buttons.addChild(adjHeightsButton);
 //    buttons.addChild(adjFrictionButton);
 buttons.addChild(adjWidthButton);
 buttons.addChild(mergeTracksButton);
-
-View.addChild(doneButton);
-View.addChild(eraserButtonNode);
-View.addChild(resetButtonNode);
+    //Zhilin
+    View.addChild(exportButton);
+    View.addChild(doneButton);
+    View.addChild(eraserButtonNode);
+    
+    View.addChild(resetButtonNode);
 /*
     adjFrictionButton.centerX = adjHeightsButton.centerX;
     adjFrictionButton.top = adjHeightsButton.bottom + 10;
@@ -443,6 +467,11 @@ View.addChild(resetButtonNode);
     eraserButtonNode.centerY = resetButtonNode.centerY + 2;
     eraserButtonNode.right = resetButtonNode.left - 10 ;
 
+    //Zhilin
+    // exportButton.centerY = eraserButtonNode.centerY - 7;
+    // exportButton.right = eraserButtonNode.left - 10;
+    exportButton.top = checkBoxes.top + 105;
+    exportButton.right = checkBoxes.right - 30;
 
     massFrictionPanel.right = View.layoutBounds.right + 65 - 120;
     massFrictionPanel.top = View.interfaceHeight + 15;
@@ -453,39 +482,42 @@ View.addChild(resetButtonNode);
 
 // Property links
 model.trackDesignStateProperty.link( function(state) {
-  adjHeightsButton.visible = (state == 'addTrack') ? true:false;
-  adjWidthButton.visible = (state == 'addTrack') ? true:false;
-  adjFrictionButton.visible = (state == 'addTrack') ? true:false;
-  eraserButtonNode.visible = (state == 'addTrack') ? true:false;
-  mergeTracksButton.visible = (state == 'addTrack') ? true:false;
-  massFrictionPanel.visible = (state == 'addTrack') ? true:false;
-  doneButton.visible = ((state !== 'addTrack')&&(state!=='merge')) ? true:false;
+	adjHeightsButton.visible = (state == 'addTrack') ? true:false;
+	adjWidthButton.visible = (state == 'addTrack') ? true:false;
+	adjFrictionButton.visible = (state == 'addTrack') ? true:false;
+	    //Zhilin
+	    eraserButtonNode.visible = (state == 'addTrack') ? true:false;
+        //exportButton.visible = (state == 'addTrack') ? true:false;
+        mergeTracksButton.visible = (state == 'addTrack') ? true:false;
+        massFrictionPanel.visible = (state == 'addTrack') ? true:false;
+        doneButton.visible = ((state !== 'addTrack')&&(state!=='merge')) ? true:false;
+        exportButton.visible = ((state !== 'addTrack')) ? true:false;
 //    	resetButtonNode.visible = ((state=='addTrack')||(state=='merge')) ?true : false;
-} );
+});
 
-// Simulation Screen Buttons
+	// Simulation Screen Buttons
 
-var playProperty = model.property( 'paused' ).not();
-var playPauseButton = new PlayPauseButton( playProperty ).mutate( {scale: 0.5} );
+	var playProperty = model.property( 'paused' ).not();
+	var playPauseButton = new PlayPauseButton( playProperty ).mutate( {scale: 0.5} );
 
     // Make the Play/Pause button bigger when it is showing the pause button, see #298
     var pauseSizeIncreaseFactor = 1.15;
     playProperty.lazyLink( function( isPlaying ) {
-      playPauseButton.scale( isPlaying ? ( 1 / pauseSizeIncreaseFactor ) : pauseSizeIncreaseFactor );
+    	playPauseButton.scale( isPlaying ? ( 1 / pauseSizeIncreaseFactor ) : pauseSizeIncreaseFactor );
     } );
 
     var stepButton = new StepButton( function() { model.manualStep(); }, playProperty );
 
     var restartSkaterButton = new RefreshButton( { listener: function() { 
-      model.returnSkaterStart();
-      model.rollerState = 'start';
-      model.manualStep();
-      
-      console.log(model.skater.changeList);
+    	model.returnSkaterStart();
+    	model.rollerState = 'start';
+    	model.manualStep();
+    	
+    	console.log(model.skater.changeList);
 
-      model.skater.changeList = [];
+    	model.skater.changeList = [];
     }
-  } );
+} );
     restartSkaterButton.scale(0.8);
     var restartSkaterText = new Text('Restart Car', {font:new PhetFont({ fill: 'black', size: 9}) } );
 
@@ -499,34 +531,34 @@ var playPauseButton = new PlayPauseButton( playProperty ).mutate( {scale: 0.5} )
     } );
     */
     var disconnectTracks =  function() {
-      model.simStateProperty.set('design');
-      model.rollerStateProperty.set('start');
-      model.trackDesignStateProperty.set('addTrack');
-      model.skater.maxAProperty.reset();
-      model.skater.maxAPosProperty.reset();
-//   	model.skater.reset();
-model.tracks.clear();
-model.paused = true;
-model.mergedTrackCount = 0;
+    	model.simStateProperty.set('design');
+    	model.rollerStateProperty.set('start');
+    	model.trackDesignStateProperty.set('addTrack');
+    	model.skater.maxAProperty.reset();
+    	model.skater.maxAPosProperty.reset();
+		//   	model.skater.reset();
+		model.tracks.clear();
+		model.paused = true;
+		model.mergedTrackCount = 0;
 
-model.previousTracks.forEach( function(track)
-{
-  track.interactive=true;
-  model.tracks.add(track);
-} );
-model.previousTracks.clear();
-};
+		model.previousTracks.forEach( function(track)
+		{
+			track.interactive=true;
+			model.tracks.add(track);
+		} );
+		model.previousTracks.clear();
+	};
 
-var disconnectTracksButton = new TextPushButton ( 'Modify Design', {
-  baseColor: 'rgb(50,50,180)',
-  baseColor: '#f0c911',
-  font: new PhetFont( 12 ),
-//      textFill: 'white',
-xMargin: 5,
-listener: disconnectTracks,
-} );
+	var disconnectTracksButton = new TextPushButton ( 'Modify Design', {
+		baseColor: 'rgb(50,50,180)',
+		baseColor: '#f0c911',
+		font: new PhetFont( 12 ),
+		//      textFill: 'white',
+		xMargin: 5,
+		listener: disconnectTracks,
+	} );
 
-var playbackSpeedControl = new PlaybackSpeedControl(model.speedProperty);
+	var playbackSpeedControl = new PlaybackSpeedControl(model.speedProperty);
 
     // Make the step button the same size as the pause button.
     stepButton.mutate( {scale: playPauseButton.height / stepButton.height} );
@@ -542,19 +574,19 @@ var playbackSpeedControl = new PlaybackSpeedControl(model.speedProperty);
     View.addChild(simControlPanel);
 
     //positioning
-//    restartSkaterButton.left = stepButton.right + 10;
-restartSkaterText.centerX = restartSkaterButton.centerX;
-restartSkaterText.top = restartSkaterButton.bottom + 5;    
-playPauseButton.left = restartSkaterButton.right + 15;
-playPauseButton.centerY = restartSkaterButton.centerY;
-stepButton.left = playPauseButton.right + 15;
-stepButton.centerY = playPauseButton.centerY;
-playbackSpeedControl.left = stepButton.right+15;
-playbackSpeedControl.centerY = stepButton.centerY;
-simControlPanel.centerX = View.layoutBounds.centerX;
-simControlPanel.top = View.layoutBounds.top + 5;
-disconnectTracksButton.right = simControlPanel.left - 10;
-disconnectTracksButton.centerY = simControlPanel.centerY;
+	//    restartSkaterButton.left = stepButton.right + 10;
+	restartSkaterText.centerX = restartSkaterButton.centerX;
+	restartSkaterText.top = restartSkaterButton.bottom + 5;    
+	playPauseButton.left = restartSkaterButton.right + 15;
+	playPauseButton.centerY = restartSkaterButton.centerY;
+	stepButton.left = playPauseButton.right + 15;
+	stepButton.centerY = playPauseButton.centerY;
+	playbackSpeedControl.left = stepButton.right+15;
+	playbackSpeedControl.centerY = stepButton.centerY;
+	simControlPanel.centerX = View.layoutBounds.centerX;
+	simControlPanel.top = View.layoutBounds.top + 5;
+	disconnectTracksButton.right = simControlPanel.left - 10;
+	disconnectTracksButton.centerY = simControlPanel.centerY;
 
 /*
     // Add the buttons directly to the view for easier positioning
@@ -566,32 +598,32 @@ disconnectTracksButton.centerY = simControlPanel.centerY;
     */
 
     model.rollerStateProperty.link( function(state) {
-      flagImgNode.visible =  ((state=='end')&&(model.accFlagVisible==true))? true: false;
-      flagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxAPos.y); 
-      flagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxAPos.x);
-      speedFlagImgNode.visible =  ((state=='end')&&(model.speedFlagVisible==true))? true: false;
-      speedFlagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxUPos.y); 
-      speedFlagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxUPos.x);
+    	flagImgNode.visible =  ((state=='end')&&(model.accFlagVisible==true))? true: false;
+    	flagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxAPos.y); 
+    	flagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxAPos.x);
+    	speedFlagImgNode.visible =  ((state=='end')&&(model.speedFlagVisible==true))? true: false;
+    	speedFlagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxUPos.y); 
+    	speedFlagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxUPos.x);
 
     } );
     model.accFlagVisibleProperty.link( function(state) {
-      flagImgNode.visible =  ((state==true)&&(model.rollerState=='end'))? true: false;
-      flagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxAPos.y); 
-      flagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxAPos.x);
+    	flagImgNode.visible =  ((state==true)&&(model.rollerState=='end'))? true: false;
+    	flagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxAPos.y); 
+    	flagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxAPos.x);
     } );
     model.speedFlagVisibleProperty.link( function(state) {
-      speedFlagImgNode.visible =  ((state==true)&&(model.rollerState=='end'))? true: false;
-      speedFlagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxUPos.y); 
-      speedFlagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxUPos.x);
+    	speedFlagImgNode.visible =  ((state==true)&&(model.rollerState=='end'))? true: false;
+    	speedFlagImgNode.bottom = View.modelViewTransform.modelToViewY(model.skater.maxUPos.y); 
+    	speedFlagImgNode.centerX = View.modelViewTransform.modelToViewX(model.skater.maxUPos.x);
     } );
 
 
     model.simStateProperty.link( function(state) {
-      if(state=='simulation') { 
-        model.pausedProperty.set(true); 
-        model.returnSkaterStart(); 
-        model.manualStep();
-      }
+    	if(state=='simulation') { 
+    		model.pausedProperty.set(true); 
+    		model.returnSkaterStart(); 
+    		model.manualStep();
+    	}
 /*
 	playPauseButton.visible = (state==='simulation') ? true:false;
 	stepButton.visible = (state==='simulation') ? true:false;
@@ -603,15 +635,15 @@ disconnectTracksButton.centerY = simControlPanel.centerY;
 	vectorsChkBox.visible = (state==='simulation') ? true:false;
 	speedChkBox.visible = (state==='simulation') ? true:false;
 	accChkBox.visible = (state==='simulation') ? true:false;
-  wallImgNodeH.visible = (state==='simulation') ? true:false;
-  wallImgNodeV.visible = (state==='simulation') ? true:false;
+	wallImgNodeH.visible = (state==='simulation') ? true:false;
+	wallImgNodeV.visible = (state==='simulation') ? true:false;
 
 } );
 
-  } 
-  return inherit( Node, TrackDesignPanel, {
+} 
+return inherit( Node, TrackDesignPanel, {
 
-  } );
+} );
 } );
 
 

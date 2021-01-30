@@ -90,6 +90,8 @@ define( function( require ) {
     var thermalLabel = createLabel( 2, thermalString, EnergySkateParkColorScheme.thermalEnergy );
     var totalLabel = createLabel( 3, totalString, EnergySkateParkColorScheme.totalEnergy );
 
+    //Zhilin
+    //console.log(kineticLabel.kineticEnergy);
 
     var clearThermalButton = new ClearThermalButton( clearThermal, skater, {
       centerX: thermalLabel.centerX,

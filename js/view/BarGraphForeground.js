@@ -51,6 +51,7 @@ define( function( require ) {
       } );
 
       var barX = getBarX( index );
+
 //      var bar = new Rectangle( barX, 0, barWidth, 100, {fill: color, pickable: false, renderer: barRenderer} );
 	//remove renderer type (DINESH)	
       var bar = new Rectangle( barX, 0, barWidth, 100, {fill: color, pickable: false} );
@@ -100,12 +101,17 @@ define( function( require ) {
     var potentialText = createText( 1, skater.potentialEnergyProperty );
     var thermalText = createText( 2, skater.thermalEnergyProperty );
     var totalText = createText( 3, skater.totalEnergyProperty );
-          
+    
+    //Zhilin
+    
+    // console.log("KineticEnergy");
+    // console.log(skater.kineticEnergyProperty);
+    // console.log(skater.potentialEnergyProperty);   
+
     Node.call( this, {
 
       // Manually align with the baseline of the bar chart.
       x: 24, y: 15,
-
       children: [
         kineticBar,
         kineticText,

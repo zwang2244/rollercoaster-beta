@@ -522,6 +522,9 @@ define( function( require ) {
           // ke = 1/2 m v v
           newSpeed = Math.sqrt( 2 * newKineticEnergy / skaterState.mass );
           newVelocity = segment.times( newSpeed );
+
+          //Zhilin
+          //console.log(newKineticEnergy);
         }
 
         var dot = proposedVelocity.normalized().dot( segment );
