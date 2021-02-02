@@ -744,8 +744,9 @@ define( function( require ) {
 
     bumpAsideLeftWindow: function() {
       var lowestX = this.getLowestX();
-      if ( lowestX < -8 ) {
-        this.translate(-8-lowestX, 0 );
+      console.log(lowestX);
+      if ( lowestX < -7 ) {
+        this.translate(-7-lowestX, 0 );
       }
     },
 

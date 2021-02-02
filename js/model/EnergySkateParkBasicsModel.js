@@ -345,8 +345,9 @@ define( function( require ) {
       var acceleration = Math.abs( frictionMagnitude ) * (skaterState.velocityX > 0 ? -1 : 1) / skaterState.mass;
 
       var v1 = skaterState.velocityX + acceleration * dt;
-
-      // Exponentially decay the velocity if already nearly zero, see #138
+      console.log(frictionMagnitude);
+      console.log(acceleration);
+      // Exponentially decay the velocitiescity if already nearly zero, see #138
       if ( this.friction !== 0 && skaterState.getSpeed() < 1E-2 ) {
         v1 = v1 / 2;
       }
