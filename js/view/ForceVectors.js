@@ -20,7 +20,7 @@ define( function( require ) {
 
   function ForceVectors( model, skaterNode, View ) {
 
-    var forceVectors = this;
+	var forceVectors = this;
     Node.call( forceVectors , {cursor: 'pointer'});
 /*
     //labels & arrow nodes
@@ -82,24 +82,30 @@ define( function( require ) {
 		    		arrowLabel.right = arrowVector.left - 10;
 		    	}
 		}
-    	};
+		};
+		
     	
     	model.skater.positionProperty.link( function (position) {
     		if(model.vectorsVisible == true)
     		{
 	    		updateArrow(position);
     		}
-    	} );
+		} );
+		//Zhilin
     	model.simStateProperty.link( function(state) {
-		model.vectorsVisible = false;
+		model.vectorsVisible = (state != 'simulation') ? false:true;
+		arrowVector.visible = (state != 'simulation') ? false:true;
+		arrowLabel.visible = (state != 'simulation') ? false:true;
+		//model.vectorsVisible = false;
 /*		arrowVector.visible = (state==='simulation') ? true:false;
 		arrowLabel.visible = (state==='simulation') ? true:false;
 		if(state=='simulation') { arrowVector.setTailAndTip(0,0,0,0); }
 */
     	} );
     	model.vectorsVisibleProperty.link( function(value) {
-		arrowVector.visible = value;
-		arrowLabel.visible = value;
+		
+		arrowVector.visible = true;
+		arrowLabel.visible = true;
 		if(value==true) { updateArrow(model.skater.positionProperty.get()); }
     	} );
     	

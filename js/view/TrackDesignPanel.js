@@ -416,16 +416,18 @@ var options = {boxWidth: 18};
     	return [itemSet.label, new Rectangle( 0, 0, padWidth + 20, 20 )];
     };
 
+	//console.log(model.gridVisibleProperty);
     var gridChkBox =  new CheckBox( new HBox( {children: pad(gridSet)} ), model.gridVisibleProperty , options );
     var vectorsChkBox = new CheckBox( new HBox( {children: pad(forceVectorsSet)} ), model.vectorsVisibleProperty , options );
     var speedChkBox = new CheckBox( new HBox( {children: pad(speedFlagSet)} ), model.speedFlagVisibleProperty , options );
     var accChkBox = new CheckBox( new HBox( {children: pad(accFlagSet)} ), model.accFlagVisibleProperty , options );
 
+	//Zhilin
     var checkBoxChildren = [
-    gridChkBox,
-    vectorsChkBox,
-    speedChkBox,
-    accChkBox
+    // gridChkBox,
+    //vectorsChkBox,
+    // speedChkBox,
+    // accChkBox
     ];
     var checkBoxes = new VBox( {align: 'left', spacing: 4, children: checkBoxChildren} );
     View.addChild(checkBoxes);
@@ -470,8 +472,8 @@ buttons.addChild(mergeTracksButton);
     //Zhilin
     // exportButton.centerY = eraserButtonNode.centerY - 7;
     // exportButton.right = eraserButtonNode.left - 10;
-    exportButton.top = checkBoxes.top + 105;
-    exportButton.right = checkBoxes.right - 30;
+	exportButton.centerY = mergeTracksButton.top + 33;
+    exportButton.left = mergeTracksButton.right + 155;
 
     massFrictionPanel.right = View.layoutBounds.right + 65 - 120;
     massFrictionPanel.top = View.interfaceHeight + 15;
